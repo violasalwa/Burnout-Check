@@ -90,7 +90,6 @@
             width: auto;
             display: block;
             object-fit: contain;
-            /* HAPUS filter invert — biarkan logo tampil warna aslinya di atas bg putih */
         }
 
         .navbar__logo-text {
@@ -375,6 +374,8 @@
             z-index: 99;
             flex-direction: column;
             gap: 0.25rem;
+            max-height: calc(100vh - var(--nav-h));
+            overflow-y: auto;
         }
         .navbar__mobile.open { display: flex; }
 
@@ -405,6 +406,22 @@
         .navbar__mobile .mob-divider { height: 1px; background: var(--g2); margin: 0.4rem 0; }
         .navbar__mobile .mob-logout  { color: #dc2626; }
         .navbar__mobile .mob-logout:hover { background: #fee2e2; color: #b91c1c; }
+
+        /* Mobile guest buttons inside drawer */
+        .navbar__mobile .mob-btn-register {
+            background: var(--bl5);
+            color: var(--wh);
+            justify-content: center;
+            font-weight: 700;
+        }
+        .navbar__mobile .mob-btn-register:hover {
+            background: var(--bl7);
+            color: var(--wh);
+        }
+        .navbar__mobile .mob-btn-login {
+            border: 1.5px solid var(--g2);
+            justify-content: center;
+        }
 
         /* ── MAIN CONTENT ───────────────────────────────────────── */
         .app-main {
@@ -566,7 +583,6 @@
     <nav class="navbar">
 
         <a href="{{ url('/') }}" class="navbar__logo">
-            {{-- Logo wrapper: ring putih tipis agar logo biru tidak tenggelam di bg biru --}}
             <div class="navbar__logo-img-wrap">
                 <img src="{{ asset('images/burnout.png') }}"
                      alt="BurnoutCheck Logo"
@@ -731,50 +747,65 @@
         </button>
     </nav>
 
-    {{-- Mobile nav drawer --}}
-    @auth
+    {{-- ═══════════════════════════════════════════════════════
+         MOBILE NAV DRAWER
+         FIX: dipindahkan keluar dari @auth supaya elemen #mobileNav
+         tetap ada di DOM untuk guest. Tanpa ini, toggleMobile()
+         akan error "Cannot read properties of null" karena
+         getElementById('mobileNav') return null saat belum login.
+    ═══════════════════════════════════════════════════════ --}}
     <div class="navbar__mobile" id="mobileNav">
-        @if (auth()->user()->role === 'mahasiswa')
-            <a href="{{ route('mahasiswa.dashboard') }}" class="{{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                Dashboard
-            </a>
-            <a href="{{ route('mahasiswa.tes.index') }}">
-                <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                Mulai Tes
-            </a>
-            <a href="{{ route('mahasiswa.history') }}">
-                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Riwayat
-            </a>
-        @elseif (auth()->user()->role === 'dosen')
-            <a href="{{ route('dosen.dashboard') }}">Dashboard</a>
-            <a href="{{ route('dosen.mahasiswa') }}">Data Mahasiswa</a>
-        @elseif (auth()->user()->role === 'kaprodi')
-            <a href="{{ route('kaprodi.dashboard') }}">Dashboard</a>
-            <a href="{{ route('kaprodi.statistik') }}">Statistik</a>
-            <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}">Mahasiswa Bimbingan</a>
-        @elseif (auth()->user()->role === 'admin')
-            <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-            <a href="{{ route('admin.users.index') }}">Users</a>
-            <a href="{{ route('admin.soal.index') }}">Soal</a>
-            <a href="{{ route('admin.risk-levels.index') }}">Level Risiko</a>
-        @endif
+        @auth
+            @if (auth()->user()->role === 'mahasiswa')
+                <a href="{{ route('mahasiswa.dashboard') }}" class="{{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Dashboard
+                </a>
+                <a href="{{ route('mahasiswa.tes.index') }}">
+                    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                    Mulai Tes
+                </a>
+                <a href="{{ route('mahasiswa.history') }}">
+                    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Riwayat
+                </a>
+            @elseif (auth()->user()->role === 'dosen')
+                <a href="{{ route('dosen.dashboard') }}">Dashboard</a>
+                <a href="{{ route('dosen.mahasiswa') }}">Data Mahasiswa</a>
+            @elseif (auth()->user()->role === 'kaprodi')
+                <a href="{{ route('kaprodi.dashboard') }}">Dashboard</a>
+                <a href="{{ route('kaprodi.statistik') }}">Statistik</a>
+                <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}">Mahasiswa Bimbingan</a>
+            @elseif (auth()->user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ route('admin.users.index') }}">Users</a>
+                <a href="{{ route('admin.soal.index') }}">Soal</a>
+                <a href="{{ route('admin.risk-levels.index') }}">Level Risiko</a>
+            @endif
 
-        <div class="mob-divider"></div>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" style="display:flex;align-items:center;gap:.6rem;width:100%;padding:.65em 1em;border-radius:10px;font-size:.9rem;font-weight:600;color:#dc2626;background:none;border:none;cursor:pointer;font-family:inherit;">
-                <svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0">
-                    <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-                Logout
-            </button>
-        </form>
+            <div class="mob-divider"></div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="mob-logout" style="display:flex;align-items:center;gap:.6rem;width:100%;padding:.65em 1em;border-radius:10px;font-size:.9rem;font-weight:600;background:none;border:none;cursor:pointer;font-family:inherit;">
+                    <svg viewBox="0 0 24 24" style="width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0">
+                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/>
+                        <polyline points="16 17 21 12 16 7"/>
+                        <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    Logout
+                </button>
+            </form>
+        @else
+            {{-- Guest: tampilkan Login & Daftar di drawer mobile --}}
+            <a href="{{ route('login') }}" class="mob-btn-login">
+                <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                Login
+            </a>
+            <a href="{{ route('register') }}" class="mob-btn-register">
+                Daftar
+            </a>
+        @endauth
     </div>
-    @endauth
 
     {{-- ── MAIN CONTENT ──────────────────────────────────────── --}}
     <main class="app-main @yield('main_class', 'app-main--inner')">
@@ -839,10 +870,12 @@
 
     <script>
         function toggleDropdown() {
-            document.getElementById('userDropdown').classList.toggle('open');
+            const dropdown = document.getElementById('userDropdown');
+            if (dropdown) dropdown.classList.toggle('open');
         }
         function toggleMobile() {
-            document.getElementById('mobileNav').classList.toggle('open');
+            const mobileNav = document.getElementById('mobileNav');
+            if (mobileNav) mobileNav.classList.toggle('open');
         }
         document.addEventListener('click', function(e) {
             const dropdown = document.getElementById('userDropdown');
