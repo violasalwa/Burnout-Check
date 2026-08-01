@@ -368,7 +368,7 @@ nav[role="navigation"] span > span {
     </table>
 
     <div>
-        {{ $mahasiswa->links() }}
+        {{ $mahasiswa->links('vendor.pagination.kaprodi-statistik') }}
     </div>
 
 </div>
