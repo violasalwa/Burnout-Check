@@ -393,23 +393,51 @@ h1::after {
                 @enderror
             </div>
 
-            {{-- Semester --}}
+            {{-- Kelas --}}
             <div class="form-group">
-                <label class="form-label" for="semester">Semester</label>
+                <label class="form-label" for="kelas">Kelas</label>
                 <div class="select-wrap">
-                    <select id="semester"
-                            name="semester"
-                            class="form-control @error('semester') is-invalid @enderror">
-                        <option value="" {{ old('semester', $user->semester) == '' ? 'selected' : '' }}>
-                            Tidak menggunakan semester
+                    <select id="kelas"
+                            name="kelas"
+                            class="form-control @error('kelas') is-invalid @enderror">
+                        <option value="" {{ old('kelas', $user->kelas) == '' ? 'selected' : '' }}>
+                            Tidak menggunakan kelas
                         </option>
-                        <option value="6" {{ old('semester', $user->semester) == 6 ? 'selected' : '' }}>
-                            Semester 6
+                        <option value="5" {{ old('kelas', $user->kelas) == 5 ? 'selected' : '' }}>
+                            Kelas A
+                        </option>
+                        <option value="6" {{ old('kelas', $user->kelas) == 6 ? 'selected' : '' }}>
+                            Kelas B
+                        </option>
+                        <option value="7" {{ old('kelas', $user->kelas) == 7 ? 'selected' : '' }}>
+                            Kelas C
+                        </option>
+                        <option value="8" {{ old('kelas', $user->kelas) == 8 ? 'selected' : '' }}>
+                            Kelas D
+                        </option>
+                        <option value="9" {{ old('kelas', $user->kelas) == 9 ? 'selected' : '' }}>
+                            Kelas E
                         </option>
                     </select>
                 </div>
                 <span class="form-hint">Kosongkan untuk admin, dosen, atau kaprodi</span>
-                @error('semester')
+                @error('kelas')
+                    <span class="invalid-feedback">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Angkatan --}}
+            <div class="form-group">
+                <label class="form-label" for="angkatan">Angkatan</label>
+                <input id="angkatan"
+                       name="angkatan"
+                       type="text"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       class="form-control @error('angkatan') is-invalid @enderror"
+                       placeholder="Contoh: 2023"
+                       value="{{ old('angkatan', $user->angkatan) }}">
+                @error('angkatan')
                     <span class="invalid-feedback">{{ $message }}</span>
                 @enderror
             </div>
@@ -459,10 +487,10 @@ h1::after {
 @section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    var semester = document.getElementById('semester');
+    var kelas = document.getElementById('kelas');
     var dosen = document.getElementById('dosen_id');
     var role = document.getElementById('role');
-    if (!semester || !dosen || !role) return;
+    if (!kelas || !dosen || !role) return;
 
     function enableDosen() {
         dosen.disabled = false;
@@ -473,10 +501,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function refreshFieldsByRole() {
         if (role.value !== 'mahasiswa') {
-            semester.disabled = true;
-            semester.required = false;
-            semester.value = '';
-            semester.style.opacity = '0.6';
+            kelas.disabled = true;
+            kelas.required = false;
+            kelas.value = '';
+            kelas.style.opacity = '0.6';
 
             dosen.disabled = true;
             dosen.required = false;
@@ -484,17 +512,17 @@ document.addEventListener('DOMContentLoaded', function () {
             dosen.style.opacity = '0.6';
             dosen.setAttribute('aria-disabled', 'true');
         } else {
-            semester.disabled = false;
-            semester.required = true;
-            semester.style.opacity = '';
-            semester.removeAttribute('aria-disabled');
+            kelas.disabled = false;
+            kelas.required = true;
+            kelas.style.opacity = '';
+            kelas.removeAttribute('aria-disabled');
 
             enableDosen();
         }
     }
 
     role.addEventListener('change', refreshFieldsByRole);
-    semester.addEventListener('change', function () { if (role.value === 'mahasiswa') enableDosen(); });
+    kelas.addEventListener('change', function () { if (role.value === 'mahasiswa') enableDosen(); });
     refreshFieldsByRole();
 });
 </script>

@@ -579,9 +579,7 @@
                         autocomplete="username" />
 
                     @error('email')
-                        <span class="field-error">
-                            Email atau password salah.
-                        </span>
+                        <span class="field-error">{{ $message }}</span>
                     @enderror
                 </div>
 

@@ -106,7 +106,7 @@ h1::after {
 .table thead th:first-child { border-radius: var(--r-sm) 0 0 var(--r-sm); }
 .table thead th:last-child  { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
 
-/* No, Skor, Semester rata tengah */
+/* No, Skor, Kelas rata tengah */
 .table thead th:nth-child(1),
 .table thead th:nth-child(4),
 .table thead th:nth-child(5),
@@ -151,12 +151,12 @@ h1::after {
     font-family: 'Courier New', monospace;
 }
 
-/* Kolom Semester — pill */
+/* Kolom Kelas — pill */
 .table tbody td:nth-child(4) {
     text-align: center;
 }
 
-.semester-pill {
+.kelas-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -360,7 +360,8 @@ nav[role="navigation"] a:hover {
                 <th>No</th>
                 <th>Nama</th>
                 <th>Email</th>
-                <th>Semester</th>
+                <th>Kelas</th>
+                <th>Angkatan</th>
                 <th>Skor Terbaru</th>
                 <th>Level Risiko</th>
             </tr>
@@ -372,10 +373,25 @@ nav[role="navigation"] a:hover {
                     <td>{{ $mhs->name }}</td>
                     <td>{{ $mhs->email }}</td>
                     <td>
-                        <span class="semester-pill">
-                            Sem {{ $mhs->semester ?? '-' }}
+                        @php
+                            $kelasLabel = '-';
+                            if ($mhs->kelas == 5) {
+                                $kelasLabel = 'Kelas A';
+                            } elseif ($mhs->kelas == 6) {
+                                $kelasLabel = 'Kelas B';
+                            } elseif ($mhs->kelas == 7) {
+                                $kelasLabel = 'Kelas C';
+                            } elseif ($mhs->kelas == 8) {
+                                $kelasLabel = 'Kelas D';
+                            } elseif ($mhs->kelas == 9) {
+                                $kelasLabel = 'Kelas E';
+                            }
+                        @endphp
+                        <span class="kelas-pill">
+                            {{ $kelasLabel }}
                         </span>
                     </td>
+                    <td>{{ $mhs->angkatan ?? '-' }}</td>
                     <td>
                         @if ($mhs->percobaanTes->first())
                             {{ $mhs->percobaanTes->first()->total_skor }}

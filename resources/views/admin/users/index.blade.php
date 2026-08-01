@@ -117,7 +117,7 @@ h1::after {
 .table thead th:first-child { border-radius: var(--r-sm) 0 0 var(--r-sm); }
 .table thead th:last-child  { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
 
-/* No, Role, Semester, Aksi rata tengah */
+/* No, Role, Kelas, Aksi rata tengah */
 .table thead th:nth-child(1),
 .table thead th:nth-child(4),
 .table thead th:nth-child(5),
@@ -388,7 +388,8 @@ nav[role="navigation"] span > span {
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Role</th>
-                <th>Semester</th>
+                <th>Kelas</th>
+                <th>Angkatan</th>
                 <th>Terdaftar</th>
                 <th>Aksi</th>
             </tr>
@@ -404,7 +405,22 @@ nav[role="navigation"] span > span {
                             {{ ucfirst($user->role) }}
                         </span>
                     </td>
-                    <td>{{ $user->semester ?? '-' }}</td>
+                    @php
+                        $kelasLabel = '-';
+                        if ($user->kelas == 5) {
+                            $kelasLabel = 'Kelas A';
+                        } elseif ($user->kelas == 6) {
+                            $kelasLabel = 'Kelas B';
+                        } elseif ($user->kelas == 7) {
+                            $kelasLabel = 'Kelas C';
+                        } elseif ($user->kelas == 8) {
+                            $kelasLabel = 'Kelas D';
+                        } elseif ($user->kelas == 9) {
+                            $kelasLabel = 'Kelas E';
+                        }
+                    @endphp
+                    <td>{{ $kelasLabel }}</td>
+                    <td>{{ $user->angkatan ?? '-' }}</td>
                     <td>{{ $user->created_at->format('d M Y') }}</td>
                     <td>
                         <a href="{{ route('admin.users.edit', $user->id) }}"

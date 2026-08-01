@@ -158,6 +158,64 @@ h1::after {
     background: rgba(255,255,255,0.25);
 }
 
+/* ── PAGINATION ──────────────────────────────────────────── */
+nav[role="navigation"] {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+nav[role="navigation"] > div:first-child {
+    font-size: 0.83rem;
+    color: var(--g6);
+    font-weight: 500;
+}
+nav[role="navigation"] span[aria-current="page"] > span,
+nav[role="navigation"] a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.6em;
+    border-radius: var(--r-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--g2);
+    margin: 0 2px;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+nav[role="navigation"] a {
+    color: var(--g6);
+    background: var(--wh);
+}
+nav[role="navigation"] a:hover {
+    background: var(--bl0);
+    border-color: var(--bl4);
+    color: var(--bl5);
+}
+nav[role="navigation"] span[aria-current="page"] > span {
+    background: linear-gradient(135deg, var(--bl5), var(--bl4));
+    border-color: transparent;
+    color: var(--wh);
+}
+nav[role="navigation"] span > span {
+    color: var(--g4);
+    background: var(--g1);
+    border: 1.5px solid var(--g2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    border-radius: var(--r-sm);
+    font-size: 0.85rem;
+    margin: 0 2px;
+}
+
 .no-dosen {
     color: var(--g4);
     font-style: italic;
@@ -193,7 +251,8 @@ h1::after {
             <tr>
                 <th>No</th>
                 <th>Nama Mahasiswa</th>
-                <th>Semester</th>
+                <th>Kelas</th>
+                <th>Angkatan</th>
                 <th>Email</th>
                 <th>Dosen Pembimbing</th>
                 <th>Tanggal Tes Terakhir</th>
@@ -204,7 +263,7 @@ h1::after {
 
         <tbody>
 
-            @forelse ($mahasiswa as $index => $mhs)
+            @forelse ($mahasiswa as $mhs)
 
                 @php
                     $tesTerakhir = $mhs->percobaanTes
@@ -215,7 +274,7 @@ h1::after {
                 <tr>
 
                     <td>
-                        {{ $mahasiswa->firstItem() + $index }}
+                        {{ ($mahasiswa->currentPage() - 1) * $mahasiswa->perPage() + $loop->iteration }}
                     </td>
 
                     <td>
@@ -223,7 +282,25 @@ h1::after {
                     </td>
 
                     <td>
-                        Semester {{ $mhs->semester }}
+                        @php
+                            $kelasLabel = '-';
+                            if ($mhs->kelas == 5) {
+                                $kelasLabel = 'Kelas A';
+                            } elseif ($mhs->kelas == 6) {
+                                $kelasLabel = 'Kelas B';
+                            } elseif ($mhs->kelas == 7) {
+                                $kelasLabel = 'Kelas C';
+                            } elseif ($mhs->kelas == 8) {
+                                $kelasLabel = 'Kelas D';
+                            } elseif ($mhs->kelas == 9) {
+                                $kelasLabel = 'Kelas E';
+                            }
+                        @endphp
+                        {{ $kelasLabel }}
+                    </td>
+
+                    <td>
+                        {{ $mhs->angkatan ?: '-' }}
                     </td>
 
                     <td>
@@ -279,7 +356,7 @@ h1::after {
             @empty
 
                 <tr>
-                    <td colspan="8" style="text-align:center;padding:2rem;">
+                    <td colspan="9" style="text-align:center;padding:2rem;">
                         Belum ada mahasiswa
                     </td>
                 </tr>
@@ -290,7 +367,7 @@ h1::after {
 
     </table>
 
-    <div style="margin-top: 1.5rem;">
+    <div>
         {{ $mahasiswa->links() }}
     </div>
 

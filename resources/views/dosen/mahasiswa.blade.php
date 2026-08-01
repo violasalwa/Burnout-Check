@@ -149,12 +149,12 @@ h1::after {
     font-family: 'Courier New', monospace;
 }
 
-/* Kolom Semester — centered pill */
+/* Kolom Kelas — centered pill */
 .table tbody td:nth-child(4) {
     text-align: center;
 }
 
-.semester-pill {
+.kelas-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -363,7 +363,8 @@ nav[role="navigation"] a:hover {
                 <th>No</th>
                 <th>Nama</th>
                 <th>Email</th>
-                <th>Semester</th>
+                <th>Kelas</th>
+                <th>Angkatan</th>
                 <th>Skor Terbaru</th>
                 <th>Level Risiko</th>
             </tr>
@@ -374,7 +375,22 @@ nav[role="navigation"] a:hover {
                     <td>{{ $mahasiswas->firstItem() + $index }}</td>
                     <td>{{ $mahasiswa->name }}</td>
                     <td>{{ $mahasiswa->email }}</td>
-                    <td>{{ $mahasiswa->semester ?? '-' }}</td>
+                    @php
+                        $kelasLabel = '-';
+                        if ($mahasiswa->kelas == 5) {
+                            $kelasLabel = 'Kelas A';
+                        } elseif ($mahasiswa->kelas == 6) {
+                            $kelasLabel = 'Kelas B';
+                        } elseif ($mahasiswa->kelas == 7) {
+                            $kelasLabel = 'Kelas C';
+                        } elseif ($mahasiswa->kelas == 8) {
+                            $kelasLabel = 'Kelas D';
+                        } elseif ($mahasiswa->kelas == 9) {
+                            $kelasLabel = 'Kelas E';
+                        }
+                    @endphp
+                    <td>{{ $kelasLabel }}</td>
+                    <td>{{ $mahasiswa->angkatan ?? '-' }}</td>
                     <td>
                         @if ($mahasiswa->percobaanTes->first())
                             {{ $mahasiswa->percobaanTes->first()->total_skor }}

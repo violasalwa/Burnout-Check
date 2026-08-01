@@ -46,7 +46,7 @@ class UserSeeder extends Seeder
 
         // =========================
         // 🔥 MAHASISWA (CONTOH 5 ORANG)
-        // semester 5 - 8
+        // kelas 5 - 8
         // =========================
         $dosenIds = User::where('role', 'dosen')->pluck('id')->toArray();
 
@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
                 'email' => "mhs$i@campus.com",
                 'password' => Hash::make('12345678'),
                 'role' => 'mahasiswa',
-                'semester' => rand(5, 8),
+                'kelas' => rand(5, 8),
                 'dosen_id' => $dosenIds[array_rand($dosenIds)]
             ]);
         }

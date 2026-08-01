@@ -35,8 +35,9 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', 'min:6'],
-            'dosen_id' => ['nullable', 'required_unless:semester,5', 'exists:users,id'],
-            'semester' => ['required', 'integer', 'between:5,8'],
+            'dosen_id' => ['nullable', 'required_unless:kelas,5', 'exists:users,id'],
+            'kelas' => ['required', 'integer', 'between:5,9'],
+            'angkatan' => ['required', 'numeric', 'digits:4'],
         ]);
 
         $user = User::create([
@@ -45,7 +46,8 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($data['password']),
             'role' => 'mahasiswa',
             'dosen_id' => $data['dosen_id'] ?? null,
-            'semester' => $data['semester'],
+            'kelas' => $data['kelas'],
+            'angkatan' => $data['angkatan'],
         ]);
 
         event(new Registered($user));

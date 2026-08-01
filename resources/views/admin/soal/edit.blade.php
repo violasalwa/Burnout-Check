@@ -245,10 +245,17 @@ select.form-control {
         <!-- Kategori -->
         <div class="field-group">
             <label for="kategori">Kategori</label>
-            <input id="kategori" type="text" name="kategori"
-                   class="form-control {{ $errors->has('kategori') ? 'is-invalid' : '' }}"
-                   value="{{ old('kategori', $soal->kategori) }}"
-                   required>
+            <select id="kategori" name="kategori"
+                    class="form-control {{ $errors->has('kategori') ? 'is-invalid' : '' }}"
+                    required>
+                <option value="" disabled {{ old('kategori', $soal->kategori) ? '' : 'selected' }}>Pilih kategori</option>
+                @php
+                    $categories = ['Exhaustion', 'Mental Distance', 'Cognitive Impairment', 'Emotional Impairment', 'Psychological Distress', 'Psychosomatic Complaints'];
+                @endphp
+                @foreach ($categories as $category)
+                    <option value="{{ $category }}" {{ old('kategori', $soal->kategori) == $category ? 'selected' : '' }}>{{ $category }}</option>
+                @endforeach
+            </select>
             @error('kategori')
                 <span class="invalid-feedback">{{ $message }}</span>
             @enderror

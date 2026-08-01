@@ -77,15 +77,18 @@ class AdminController extends Controller
         ]);
 
         // Conditional validation for mahasiswa role
-        $semester = null;
+        $kelas = null;
         $dosenId = null;
+        $angkatan = null;
         if ($request->role === 'mahasiswa') {
             $request->validate([
-                'semester' => 'required|integer|between:5,8',
-                'dosen_id' => 'required_unless:semester,5|exists:users,id',
+                'kelas' => 'required|integer|between:5,9',
+                'dosen_id' => 'required_unless:kelas,5|exists:users,id',
+                'angkatan' => 'required|numeric|digits:4',
             ]);
-            $semester = $request->semester;
+            $kelas = $request->kelas;
             $dosenId = $request->dosen_id;
+            $angkatan = $request->angkatan;
         }
 
         User::create([
@@ -97,8 +100,9 @@ class AdminController extends Controller
 
             'role' => $request->role,
 
-            'semester' => $semester,
+            'kelas' => $kelas,
             'dosen_id' => $dosenId,
+            'angkatan' => $angkatan,
         ]);
 
         return redirect()
@@ -135,12 +139,12 @@ class AdminController extends Controller
         // Conditional validation for mahasiswa
         if ($request->role === 'mahasiswa') {
             $request->validate([
-                'semester' => 'required|integer|between:5,8',
-                'dosen_id' => 'required_unless:semester,5|exists:users,id',
+                'kelas' => 'required|integer|between:5,9',
+                'dosen_id' => 'required_unless:kelas,5|exists:users,id',
+                'angkatan' => 'required|numeric|digits:4',
             ]);
         }
       
-
         $user->name = $request->name;
 
         $user->email = $request->email;
@@ -148,11 +152,13 @@ class AdminController extends Controller
         $user->role = $request->role;
 
         if ($request->role === 'mahasiswa') {
-            $user->semester = $request->semester;
+            $user->kelas = $request->kelas;
             $user->dosen_id = $request->dosen_id;
+            $user->angkatan = $request->angkatan;
         } else {
-            $user->semester = null;
+            $user->kelas = null;
             $user->dosen_id = null;
+            $user->angkatan = null;
         }
 
         if ($request->filled('password')) {

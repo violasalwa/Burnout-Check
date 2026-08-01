@@ -540,7 +540,7 @@
         'rendah'        => [
             'Pertahankan pola istirahat dan manajemen waktu yang sudah Anda terapkan.',
             'Terus lakukan hobi atau kegiatan di luar akademik untuk menjaga keseimbangan.',
-            'Lakukan evaluasi mandiri secara berkala setiap akhir semester.',
+            'Lakukan evaluasi mandiri secara berkala setiap akhir kelas.',
         ],
         'sedang'        => [
             'Mulai atur ulang jadwal belajar dan istirahat agar lebih seimbang.',
@@ -685,8 +685,8 @@
                 Download PDF
             </a>
 
-            {{-- Hanya tampil jika level sedang/tinggi/sangat tinggi --}}
-            @if(in_array($slug, ['sedang', 'tinggi']))
+            {{-- Hanya tampil jika level tinggi --}}
+            @if($slug === 'tinggi')
             <a href="https://himpsi.or.id/cari-psikolog"
                 target="_blank"
                 rel="noopener noreferrer"

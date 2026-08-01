@@ -88,13 +88,37 @@ class KaprodiController extends Controller
             abort(403, 'Akses ditolak');
         }
 
-        $mahasiswa = User::with([
+        $levelOrder = [
+            'sangat tinggi' => 4,
+            'tinggi'        => 3,
+            'sedang'        => 2,
+            'rendah'        => 1,
+        ];
+
+        $allMahasiswa = User::with([
                 'dosen',
                 'percobaanTes.levelRisiko'
             ])
             ->where('role', 'mahasiswa')
-            ->latest()
-            ->paginate(10);
+            ->get()
+            ->sortByDesc(function ($mhs) use ($levelOrder) {
+                $tes = $mhs->percobaanTes->sortByDesc('created_at')->first();
+                if (!$tes || !$tes->levelRisiko) return -1;
+                $nama = strtolower($tes->levelRisiko->nama_level);
+                return $levelOrder[$nama] ?? 0;
+            })
+            ->values();
+
+        $page    = request()->get('page', 1);
+        $perPage = 10;
+
+        $mahasiswa = new \Illuminate\Pagination\LengthAwarePaginator(
+            $allMahasiswa->slice(($page - 1) * $perPage, $perPage)->values(),
+            $allMahasiswa->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         return view(
             'kaprodi.statistik',

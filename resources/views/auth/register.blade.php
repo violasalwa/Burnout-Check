@@ -342,26 +342,39 @@
 
                 <div class="field-row">
                     <div class="field-group">
-                        <x-input-label for="semester" value="Semester" />
-                        <select id="semester" name="semester"
-                                class="reg-select {{ $errors->has('semester') ? 'is-invalid' : '' }}" required>
+                        <x-input-label for="kelas" value="Kelas" />
+                        <select id="kelas" name="kelas"
+                                class="reg-select {{ $errors->has('kelas') ? 'is-invalid' : '' }}" required>
                             <option value="">-- Pilih --</option>
-                            <option value="6" {{ old('semester') == 6 ? 'selected' : '' }}>Semester 6</option>
+                            <option value="5" {{ old('kelas') == 5 ? 'selected' : '' }}>Kelas A</option>
+                            <option value="6" {{ old('kelas') == 6 ? 'selected' : '' }}>Kelas B</option>
+                            <option value="7" {{ old('kelas') == 7 ? 'selected' : '' }}>Kelas C</option>
+                            <option value="8" {{ old('kelas') == 8 ? 'selected' : '' }}>Kelas D</option>
+                            <option value="9" {{ old('kelas') == 9 ? 'selected' : '' }}>Kelas E</option>
                         </select>
-                        @error('semester') <span class="field-error">{{ $message }}</span> @enderror
+                        @error('kelas') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
 
                     <div class="field-group">
-                        <x-input-label for="dosen_id" value="Dosen Pembimbing" />
-                        <select id="dosen_id" name="dosen_id"
-                            class="reg-select {{ $errors->has('dosen_id') ? 'is-invalid' : '' }}" required>
-                            <option value="">-- Pilih --</option>
-                            @foreach ($dosenList as $dosen)
-                                <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('dosen_id') <span class="field-error">{{ $message }}</span> @enderror
+                        <x-input-label for="angkatan" value="Angkatan" />
+                        <input id="angkatan" name="angkatan" type="text" inputmode="numeric" pattern="[0-9]*"
+                               class="reg-input {{ $errors->has('angkatan') ? 'is-invalid' : '' }}"
+                               placeholder="Contoh: 2023"
+                               value="{{ old('angkatan') }}" required />
+                        @error('angkatan') <span class="field-error">{{ $message }}</span> @enderror
                     </div>
+                </div>
+
+                <div class="field-group">
+                    <x-input-label for="dosen_id" value="Dosen Pembimbing" />
+                    <select id="dosen_id" name="dosen_id"
+                        class="reg-select {{ $errors->has('dosen_id') ? 'is-invalid' : '' }}" required>
+                        <option value="">-- Pilih --</option>
+                        @foreach ($dosenList as $dosen)
+                            <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('dosen_id') <span class="field-error">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="field-row">
@@ -393,5 +406,5 @@
 
     </div>
 
-<!-- Removed semester-5 toggle script since only semester 6 remains and dosen is always required -->
+<!-- Removed kelas-5 toggle script since only kelas 6 remains and dosen is always required -->
 </x-guest-layout>
