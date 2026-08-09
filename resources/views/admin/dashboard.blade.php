@@ -284,6 +284,7 @@ h1::after {
 .menu-item--users .menu-item__icon  { background: linear-gradient(135deg, var(--bl9), var(--bl5)); }
 .menu-item--soal .menu-item__icon   { background: linear-gradient(135deg, #0891b2, #06b6d4); }
 .menu-item--level .menu-item__icon  { background: linear-gradient(135deg, #7c3aed, #a78bfa); }
+.menu-item--tes .menu-item__icon    { background: linear-gradient(135deg, #16a34a, #22c55e); }
 
 .menu-item__info { flex: 1; min-width: 0; }
 .menu-item__title {
@@ -602,6 +603,23 @@ h1::after {
                 <div class="menu-item__info">
                     <p class="menu-item__title">Kelola Level Risiko</p>
                     <p class="menu-item__desc">Atur ambang batas skor burnout</p>
+                </div>
+                <svg class="menu-item__arrow" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </a>
+
+            <a href="{{ route('admin.hasil.index') }}" class="menu-item menu-item--tes">
+                <div class="menu-item__icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="4" width="18" height="16" rx="2"/>
+                        <line x1="7" y1="9" x2="17" y2="9"/>
+                        <line x1="7" y1="13" x2="13" y2="13"/>
+                    </svg>
+                </div>
+                <div class="menu-item__info">
+                    <p class="menu-item__title">Hasil Tes</p>
+                    <p class="menu-item__desc">Lihat semua hasil tes mahasiswa dan unduh laporan</p>
                 </div>
                 <svg class="menu-item__arrow" viewBox="0 0 24 24">
                     <polyline points="9 18 15 12 9 6"/>

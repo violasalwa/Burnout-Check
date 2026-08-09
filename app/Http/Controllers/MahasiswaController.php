@@ -11,7 +11,7 @@ class MahasiswaController extends Controller
     {
         $user = auth()->user();
 
-        $latestResult = PercobaanTes::with('levelRisiko')
+        $latestResult = PercobaanTes::with(['levelRisiko', 'jawaban.soal'])
             ->where('pengguna_id', $user->id)
             ->latest()
             ->first();

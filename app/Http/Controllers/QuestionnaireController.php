@@ -121,7 +121,6 @@ class QuestionnaireController extends Controller
     {
         $percobaan = PercobaanTes::with([
                 'levelRisiko',
-                'jawaban.soal',
                 'user'
             ])
             ->findOrFail($id);
@@ -130,9 +129,14 @@ class QuestionnaireController extends Controller
             abort(403);
         }
 
+        $jawabanPaginated = $percobaan->jawaban()
+            ->with('soal')
+            ->orderBy('id')
+            ->paginate(10);
+
         return view(
             'mahasiswa.tes.hasil',
-            compact('percobaan')
+            compact('percobaan', 'jawabanPaginated')
         );
     }
 

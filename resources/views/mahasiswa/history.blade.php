@@ -94,29 +94,48 @@ h1::after {
 }
 
 /* ── 4. TABLE ────────────────────────────────────────────── */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.88rem;
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
-.table thead tr {
-    background: linear-gradient(90deg, var(--bl9), var(--bl7));
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
 }
 
 .table thead th {
-    padding: 0.85rem 1rem;
-    color: var(--wh);
-    font-weight: 600;
-    text-align: left;
-    font-size: 0.78rem;
-    letter-spacing: 0.05em;
+    padding: 1rem;
+    color: var(--g5);
+    font-size: 0.75rem;
+    font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: left;
+    border-bottom: 2px solid var(--g2);
     white-space: nowrap;
 }
 
-.table thead th:first-child { border-radius: var(--r-sm) 0 0 var(--r-sm); }
-.table thead th:last-child  { border-radius: 0 var(--r-sm) var(--r-sm) 0; }
+.table tbody tr {
+    transition: background-color var(--tr);
+}
+
+.table tbody tr:hover {
+    background-color: var(--g1);
+}
+
+.table tbody td {
+    padding: 1rem;
+    color: var(--g8);
+    border-bottom: 1px solid var(--g2);
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
 
 /* Kolom No. & Skor rata tengah */
 .table thead th:nth-child(1),
@@ -126,40 +145,18 @@ h1::after {
     text-align: center;
 }
 
-.table tbody tr {
-    border-bottom: 1px solid var(--g2);
-    transition: background var(--tr);
-}
-
-.table tbody tr:last-child { border-bottom: none; }
-
-.table tbody tr:hover { background: var(--bl0); }
-
-.table tbody td {
-    padding: 0.85rem 1rem;
-    color: var(--g8);
-    vertical-align: middle;
-}
-
-/* Nomor urut */
-.table tbody td:first-child {
-    font-weight: 700;
-    color: var(--g4);
-    font-size: 0.82rem;
-}
-
 /* Skor — bold biru */
 .table tbody td:nth-child(3) {
-    font-weight: 700;
+    font-weight: 800;
     color: var(--bl7);
-    font-size: 1rem;
+    font-size: 1.05rem;
 }
 
 /* Empty state */
-.card > p {
-    color: var(--g4);
-    font-size: 0.9rem;
-    font-style: italic;
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--g5);
 }
 
 /* ── 5. BADGE ────────────────────────────────────────────── */
@@ -333,42 +330,67 @@ nav[role="navigation"] span > span {
 @section('content')
 <h1>Riwayat Tes Burnout</h1>
 
-<div class="card">
+<div class="card" style="padding: 1.5rem 0;">
     @if ($history->count() > 0)
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Skor</th>
-                    <th>Level Risiko</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($history as $index => $result)
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
                     <tr>
-                        <td>{{ $history->firstItem() + $index }}</td>
-                        <td>{{ $result->created_at->format('d M Y H:i') }}</td>
-                        <td>{{ $result->total_skor }}</td>
-                        <td>
-                            <span class="badge badge-{{ strtolower(str_replace(' ', '-', $result->levelRisiko->nama_level)) }}">
-                                {{ $result->levelRisiko->nama_level }}
-                            </span>
-                        </td>
-                        <td>
-                            <a href="{{ route('mahasiswa.tes.hasil', $result->id) }}" class="btn">Lihat</a>
-                        </td>
+                        <th>No</th>
+                        <th>Tanggal Tes</th>
+                        <th>Skor</th>
+                        <th>Level Risiko</th>
+                        <th>Aksi</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($history as $index => $result)
+                        <tr>
+                            <td style="font-weight: 600; color: var(--g5);">{{ $history->firstItem() + $index }}</td>
+                            <td>
+                                <div style="color: var(--g8); font-weight: 600; font-size: 0.95rem;">
+                                    {{ $result->created_at->format('d M Y') }}
+                                </div>
+                                <div style="font-size: 0.75rem; color: var(--g5); margin-top: 2px;">
+                                    {{ $result->created_at->format('H:i') }} WIB
+                                </div>
+                            </td>
+                            <td>{{ $result->total_skor }}</td>
+                            <td>
+                                <span class="badge badge-{{ strtolower(str_replace(' ', '-', $result->levelRisiko->nama_level)) }}">
+                                    {{ $result->levelRisiko->nama_level }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ route('mahasiswa.tes.hasil', $result->id) }}" class="btn">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" style="fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                    Lihat
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
-        <div style="margin-top: 1.5rem;">
+        <div style="margin-top: 1.5rem; padding: 0 1.5rem;">
             {{ $history->links() }}
         </div>
     @else
-        <p>Belum ada riwayat tes.</p>
+        <div class="empty-state">
+            <svg viewBox="0 0 24 24" width="48" height="48" style="margin-bottom: 1rem; fill: none; stroke: var(--g4); stroke-width: 1.5;">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <p style="font-size: 1.1rem; font-weight: 700; color: var(--g8);">Belum Ada Riwayat Tes</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">Anda belum pernah mengikuti tes burnout.</p>
+        </div>
     @endif
 </div>
 

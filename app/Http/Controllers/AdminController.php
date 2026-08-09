@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\User;
 use App\Models\Soal;
@@ -287,15 +288,87 @@ class AdminController extends Controller
     /**
      * HASIL TES SEMUA MAHASISWA
      */
-    public function hasilTes()
+    public function hasilTes(Request $request)
     {
-        $results = PercobaanTes::with([
-                'user',
-                'levelRisiko'
-            ])
-            ->latest()
-            ->paginate(10);
+        $dosens = User::where('role', 'dosen')
+            ->orderBy('name')
+            ->get();
 
-        return view('admin.hasil.index', compact('results'));
+        $selectedDosenId = $request->query('dosen_id');
+        $selectedDosen = null;
+        $results = null;
+
+        if ($selectedDosenId) {
+            $selectedDosen = User::where('role', 'dosen')
+                ->find($selectedDosenId);
+
+            if ($selectedDosen) {
+                $latestIds = PercobaanTes::whereHas('user', function ($query) use ($selectedDosen) {
+                        $query->where('dosen_id', $selectedDosen->id);
+                    })
+                    ->selectRaw('MAX(id) as id')
+                    ->groupBy('pengguna_id')
+                    ->pluck('id');
+
+                $results = PercobaanTes::with(['user', 'levelRisiko'])
+                    ->whereIn('id', $latestIds)
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10)
+                    ->appends(['dosen_id' => $selectedDosen->id]);
+            }
+        }
+
+        return view('admin.hasil.index', compact(
+            'dosens',
+            'selectedDosen',
+            'results'
+        ));
+    }
+
+    public function mahasiswaByDosen(Request $request)
+    {
+        $dosens = User::where('role', 'dosen')
+            ->orderBy('name')
+            ->get();
+
+        $selectedDosenId = $request->query('dosen_id');
+        $selectedDosen = null;
+        $mahasiswas = null;
+
+        if ($selectedDosenId) {
+            $selectedDosen = User::where('role', 'dosen')
+                ->find($selectedDosenId);
+
+            if ($selectedDosen) {
+                $mahasiswas = User::with([
+                        'percobaanTes' => function ($query) {
+                            $query->latest();
+                        },
+                        'percobaanTes.levelRisiko'
+                    ])
+                    ->where('role', 'mahasiswa')
+                    ->where('dosen_id', $selectedDosen->id)
+                    ->paginate(10)
+                    ->appends(['dosen_id' => $selectedDosen->id]);
+            }
+        }
+
+        return view('admin.mahasiswa.index', compact(
+            'dosens', 'selectedDosen', 'mahasiswas'
+        ));
+    }
+
+    public function downloadTesPdf($id)
+    {
+        $percobaan = PercobaanTes::with([
+                'levelRisiko',
+                'jawaban.soal',
+                'user'
+            ])
+            ->findOrFail($id);
+
+        $pdf = Pdf::loadView('mahasiswa.pdf.hasil', compact('percobaan'));
+
+        return $pdf->download('hasil-burnout-mahasiswa-' . $percobaan->user->id . '.pdf');
     }
 }

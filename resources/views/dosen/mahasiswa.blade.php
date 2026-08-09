@@ -367,6 +367,7 @@ nav[role="navigation"] a:hover {
                 <th>Angkatan</th>
                 <th>Skor Terbaru</th>
                 <th>Level Risiko</th>
+                <th>Indikator Tertinggi</th>
             </tr>
         </thead>
         <tbody>
@@ -403,6 +404,23 @@ nav[role="navigation"] a:hover {
                             <span class="badge badge-{{ strtolower(str_replace(' ', '-', $mahasiswa->percobaanTes->first()->levelRisiko->nama_level)) }}">
                                 {{ $mahasiswa->percobaanTes->first()->levelRisiko->nama_level }}
                             </span>
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td>
+                        @if ($mahasiswa->percobaanTes->first())
+                            @php
+                                $dimScores = $mahasiswa->percobaanTes->first()->calculateDimensionScores();
+                                $topDim = $dimScores ? $dimScores->first() : null;
+                            @endphp
+                            @if($topDim)
+                                <span class="badge badge-{{ strtolower(str_replace(' ', '-', $topDim['level'])) }}">
+                                    {{ $topDim['kategori'] }} ({{ $topDim['percent'] }}%)
+                                </span>
+                            @else
+                                -
+                            @endif
                         @else
                             -
                         @endif

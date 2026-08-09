@@ -213,32 +213,39 @@ h1::after {
 }
 
 /* ── FORM GROUP (tiap soal) ───────────────────────────────── */
-.form-group {
-    padding: 1.1rem 1.25rem;
-    border-radius: var(--r-sm);
-    border: 1.5px solid var(--g2);
-    background: var(--g1);
+.questions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
     margin-bottom: 0.85rem;
-    transition: border-color var(--tr), background var(--tr), box-shadow var(--tr);
+}
+
+.form-group {
+    padding: 1.2rem 1.3rem;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--g2);
+    background: var(--wh);
+    box-shadow: var(--sh-md);
+    transition: border-color var(--tr), background var(--tr), box-shadow var(--tr), transform var(--tr);
 }
 .form-group:hover {
     border-color: var(--bl4);
-    background: var(--bl0);
-    box-shadow: 0 2px 10px rgba(40, 114, 232, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px rgba(40, 114, 232, 0.12);
 }
 .form-group.answered {
-    border-color: var(--bl4);
+    border-color: var(--bl5);
     background: var(--bl0);
 }
 
 /* Teks pertanyaan */
 .form-group > .soal-label {
     display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: var(--g8);
-    line-height: 1.65;
-    margin-bottom: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
 }
 
 .soal-nomor {
@@ -278,22 +285,24 @@ h1::after {
 
 .radio-pills {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.65rem;
     flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .radio-pills label {
-    flex: 1;
-    min-width: 44px;
+    flex: 1 1 0;
+    min-width: 48px;
+    max-width: 84px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.2rem;
-    padding: 0.5em 0.3em;
-    border-radius: var(--r-sm);
+    gap: 0.25rem;
+    padding: 0.75em 0.55em;
+    border-radius: calc(var(--r-sm) + 2px);
     border: 1.5px solid var(--g2);
     background: var(--wh);
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: var(--g6);
     cursor: pointer;
@@ -312,12 +321,13 @@ h1::after {
 }
 
 .radio-pills label .pill-desc {
-    font-size: 0.6rem;
+    font-size: 0.62rem;
     font-weight: 500;
     color: var(--g4);
     line-height: 1.2;
     text-align: center;
     display: block;
+    min-height: 1.3rem;
 }
 
 .radio-pills input[type="radio"] {
@@ -522,6 +532,7 @@ h1::after {
                 </p>
 
                 {{-- Soal --}}
+                <div class="questions-grid">
                 @foreach ($soalDimensi as $soal)
                     @php $globalIdx = $soals->search(fn($s) => $s->id === $soal->id); @endphp
                     <div class="form-group" id="fg-{{ $soal->id }}">
@@ -535,9 +546,6 @@ h1::after {
                                 <span>Sangat Setuju</span>
                             </div>
                             <div class="radio-pills">
-                                @php
-                                    $pillLabels = ['', 'Tidak\nSetuju', 'Cukup', 'Setuju', ''];
-                                @endphp
                                 @for ($i = 1; $i <= 5; $i++)
                                     <label>
                                         <input type="radio"
@@ -560,6 +568,7 @@ h1::after {
                         </div>
                     </div>
                 @endforeach
+                </div>
             </div>
 
             {{-- Navigasi --}}

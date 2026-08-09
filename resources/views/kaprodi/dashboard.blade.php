@@ -26,7 +26,7 @@
     --tr   : 0.22s cubic-bezier(.4,0,.2,1);
 }
 
-/* ── PAGE TITLE ── */
+/* â”€â”€ PAGE TITLE â”€â”€ */
 h1 {
     font-size: clamp(1.35rem, 3vw, 1.9rem);
     font-weight: 700;
@@ -46,7 +46,7 @@ h1::after {
     border-radius: 2px;
 }
 
-/* ── WELCOME BANNER ── */
+/* â”€â”€ WELCOME BANNER â”€â”€ */
 .welcome-banner {
     background: linear-gradient(135deg, var(--bl9) 0%, var(--bl7) 55%, var(--bl5) 100%);
     border-radius: var(--r-lg);
@@ -112,7 +112,7 @@ h1::after {
     stroke-linejoin: round;
 }
 
-/* ── SECTION LABEL ── */
+/* â”€â”€ SECTION LABEL â”€â”€ */
 .section-label {
     font-size: 0.72rem;
     font-weight: 700;
@@ -131,7 +131,7 @@ h1::after {
     background: var(--g2);
 }
 
-/* ── STAT GRID ── */
+/* â”€â”€ STAT GRID â”€â”€ */
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -217,7 +217,7 @@ h1::after {
 .stat-box--sedang::after { background: radial-gradient(circle, rgba(161,98,7,0.10) 0%, transparent 70%); }
 .stat-box--tinggi::after { background: radial-gradient(circle, rgba(185,28,28,0.10) 0%, transparent 70%); }
 
-/* ── CARD ── */
+/* â”€â”€ CARD â”€â”€ */
 .card {
     background: var(--wh);
     border-radius: var(--r-lg);
@@ -250,7 +250,7 @@ h1::after {
     flex-shrink: 0;
 }
 
-/* ── CHART GRID — 2 kolom untuk 2 diagram ── */
+/* â”€â”€ CHART GRID â€” 2 kolom untuk 2 diagram â”€â”€ */
 .chart-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -258,7 +258,7 @@ h1::after {
     margin-bottom: 1.75rem;
 }
 
-/* ── BOTTOM GRID ── */
+/* â”€â”€ BOTTOM GRID â”€â”€ */
 .bottom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -266,7 +266,7 @@ h1::after {
     margin-bottom: 1.75rem;
 }
 
-/* ── MENU ITEM ── */
+/* â”€â”€ MENU ITEM â”€â”€ */
 .menu-list {
     display: flex;
     flex-direction: column;
@@ -333,7 +333,7 @@ h1::after {
     transform: translateX(2px);
 }
 
-/* ── RISIKO BREAKDOWN ── */
+/* â”€â”€ RISIKO BREAKDOWN â”€â”€ */
 .risiko-list {
     display: flex;
     flex-direction: column;
@@ -388,7 +388,7 @@ h1::after {
 .progress-bar__fill--sedang { background: linear-gradient(90deg, #a16207, #f59e0b); }
 .progress-bar__fill--tinggi { background: linear-gradient(90deg, #b91c1c, #ef4444); }
 
-/* ── RESPONSIVE ── */
+/* â”€â”€ RESPONSIVE â”€â”€ */
 @media (max-width: 768px) {
     .welcome-banner { padding: 1.5rem; }
     .welcome-banner__icon { display: none; }
@@ -407,7 +407,7 @@ h1::after {
 
 <h1>Dashboard Kepala Program Studi</h1>
 
-{{-- ── Welcome Banner ── --}}
+{{-- â”€â”€ Welcome Banner â”€â”€ --}}
 <div class="welcome-banner">
     <div class="welcome-banner__text">
         <h2>Selamat Datang, {{ Auth::user()->name }}!</h2>
@@ -422,21 +422,14 @@ h1::after {
 </div>
 
 @php
-    $rendahCount         = $riskStats->firstWhere('nama_level', 'Rendah')?->percobaan_tes_count ?? 0;
-    $sedangCount         = $riskStats->firstWhere('nama_level', 'Sedang')?->percobaan_tes_count ?? 0;
-    $tinggiCount         = $riskStats->firstWhere('nama_level', 'Tinggi')?->percobaan_tes_count ?? 0;
-
-    $rendahBimbingan     = $bimbinganStats->firstWhere('nama_level', 'Rendah')?->jumlah ?? 0;
-    $sedangBimbingan     = $bimbinganStats->firstWhere('nama_level', 'Sedang')?->jumlah ?? 0;
-    $tinggiBimbingan     = $bimbinganStats->firstWhere('nama_level', 'Tinggi')?->jumlah ?? 0;
+    $rendahCount     = $riskStats->firstWhere('nama_level', 'Rendah')?->percobaan_tes_count ?? 0;
+    $sedangCount     = $riskStats->firstWhere('nama_level', 'Sedang')?->percobaan_tes_count ?? 0;
+    $tinggiCount     = $riskStats->firstWhere('nama_level', 'Tinggi')?->percobaan_tes_count ?? 0;
 @endphp
 
-{{-- ══════════════════════════════════════════════
-     BAGIAN 1 — SELURUH MAHASISWA PRODI
-══════════════════════════════════════════════ --}}
-<div class="section-label">Seluruh Mahasiswa Program Studi</div>
+{{-- â”€â”€ Stat Summary Cards â”€â”€ --}}
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.25rem; margin-bottom:1.75rem;">
 
-<div class="stat-grid" style="margin-bottom: 1.25rem;">
     <div class="stat-box stat-box--total">
         <div class="stat-box__icon">
             <svg viewBox="0 0 24 24">
@@ -449,6 +442,18 @@ h1::after {
         <h3>Total Mahasiswa</h3>
         <p class="number">{{ $totalMahasiswa }}</p>
         <p class="stat-sub">Terdaftar di sistem</p>
+    </div>
+
+    <div class="stat-box stat-box--total" style="--icon-grad: linear-gradient(135deg,#1a4fad,#2872e8);">
+        <div class="stat-box__icon" style="background:linear-gradient(135deg,#0d2d6b,#1a4fad);">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+            </svg>
+        </div>
+        <h3>Total Dosen</h3>
+        <p class="number" style="color:#1a4fad;">{{ $totalDosen }}</p>
+        <p class="stat-sub">Dosen pembimbing</p>
     </div>
 
     <div class="stat-box stat-box--rendah">
@@ -488,288 +493,171 @@ h1::after {
         <p class="number">{{ $tinggiCount }}</p>
         <p class="stat-sub">Perlu penanganan</p>
     </div>
-</div>
-
-{{-- ══════════════════════════════════════════════
-     BAGIAN 2 — MAHASISWA BIMBINGAN
-══════════════════════════════════════════════ --}}
-<div class="section-label">Mahasiswa Bimbingan Saya</div>
-
-<div class="stat-grid" style="margin-bottom: 1.75rem;">
-    <div class="stat-box stat-box--total">
-        <div class="stat-box__icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-            </svg>
-        </div>
-        <h3>Total Bimbingan</h3>
-        <p class="number">{{ $totalMahasiswaBimbingan }}</p>
-        <p class="stat-sub">Mahasiswa bimbingan</p>
-    </div>
-
-    <div class="stat-box stat-box--rendah">
-        <div class="stat-box__icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
-        </div>
-        <h3>Risiko Rendah</h3>
-        <p class="number">{{ $rendahBimbingan }}</p>
-        <p class="stat-sub">Kondisi stabil</p>
-    </div>
-
-    <div class="stat-box stat-box--sedang">
-        <div class="stat-box__icon">
-            <svg viewBox="0 0 24 24">
-                <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/>
-                <line x1="12" y1="17" x2="12.01" y2="17"/>
-            </svg>
-        </div>
-        <h3>Risiko Sedang</h3>
-        <p class="number">{{ $sedangBimbingan }}</p>
-        <p class="stat-sub">Perlu diperhatikan</p>
-    </div>
-
-    <div class="stat-box stat-box--tinggi">
-        <div class="stat-box__icon">
-            <svg viewBox="0 0 24 24">
-                <circle cx="12" cy="12" r="10"/>
-                <line x1="15" y1="9" x2="9" y2="15"/>
-                <line x1="9" y1="9" x2="15" y2="15"/>
-            </svg>
-        </div>
-        <h3>Risiko Tinggi</h3>
-        <p class="number">{{ $tinggiBimbingan }}</p>
-        <p class="stat-sub">Perlu penanganan</p>
-    </div>
-</div>
-
-{{-- ══════════════════════════════════════════════
-     DIAGRAM — 2 kolom
-══════════════════════════════════════════════ --}}
-<div class="chart-grid">
-
-    {{-- Diagram Seluruh Prodi --}}
-    <div class="card">
-        <h2>Distribusi Risiko — Seluruh Prodi</h2>
-        <div style="width:100%; max-width:320px; margin:0 auto;">
-            <canvas id="riskChartProdi"></canvas>
-        </div>
-    </div>
-
-    {{-- Diagram Mahasiswa Bimbingan --}}
-    <div class="card">
-        <h2>Distribusi Risiko — Bimbingan Saya</h2>
-        <div style="width:100%; max-width:320px; margin:0 auto;">
-            <canvas id="riskChartBimbingan"></canvas>
-        </div>
-    </div>
 
 </div>
 
-{{-- ══════════════════════════════════════════════
-     BOTTOM — Menu & Breakdown
-══════════════════════════════════════════════ --}}
-<div class="bottom-grid">
+{{-- ── Breakdown Distribusi Risiko ── --}}
+@php $totalProdi = max($totalMahasiswa, 1); @endphp
+<div class="card" style="margin-bottom:1.75rem;">
+    <h2>Distribusi Risiko — Seluruh Prodi</h2>
+    <div class="risiko-list">
+        <div class="risiko-row">
+            <div class="risiko-row__header">
+                <span class="risiko-row__label">
+                    <span class="risiko-dot risiko-dot--rendah"></span>Rendah
+                </span>
+                <span class="risiko-row__count">{{ $rendahCount }} mahasiswa</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--rendah"
+                     style="width:{{ round(($rendahCount / $totalProdi) * 100) }}%"></div>
+            </div>
+        </div>
+        <div class="risiko-row">
+            <div class="risiko-row__header">
+                <span class="risiko-row__label">
+                    <span class="risiko-dot risiko-dot--sedang"></span>Sedang
+                </span>
+                <span class="risiko-row__count">{{ $sedangCount }} mahasiswa</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--sedang"
+                     style="width:{{ round(($sedangCount / $totalProdi) * 100) }}%"></div>
+            </div>
+        </div>
+        <div class="risiko-row">
+            <div class="risiko-row__header">
+                <span class="risiko-row__label">
+                    <span class="risiko-dot risiko-dot--tinggi"></span>Tinggi
+                </span>
+                <span class="risiko-row__count">{{ $tinggiCount }} mahasiswa</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-bar__fill progress-bar__fill--tinggi"
+                     style="width:{{ round(($tinggiCount / $totalProdi) * 100) }}%"></div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    {{-- Menu Kaprodi --}}
-    <div class="card">
-        <h2>Menu Kaprodi</h2>
-        <div class="menu-list">
-            <a href="{{ route('kaprodi.statistik') }}" class="menu-item">
-                <div class="menu-item__icon">
-                    <svg viewBox="0 0 24 24">
-                        <line x1="18" y1="20" x2="18" y2="10"/>
-                        <line x1="12" y1="20" x2="12" y2="4"/>
-                        <line x1="6"  y1="20" x2="6"  y2="14"/>
-                    </svg>
-                </div>
-                <div class="menu-item__info">
-                    <p class="menu-item__title">Statistik Lengkap</p>
-                    <p class="menu-item__desc">Lihat laporan dan analisis data burnout</p>
-                </div>
-                <svg class="menu-item__arrow" viewBox="0 0 24 24">
-                    <polyline points="9 18 15 12 9 6"/>
+{{-- ── Bar Chart Per Dosen ── --}}
+<div class="card" style="margin-bottom:1.75rem;">
+    <h2>Rata-rata Skor Burnout Mahasiswa Per Dosen</h2>
+    <div style="position:relative; min-height:360px;">
+        <canvas id="dosenBarChart"></canvas>
+    </div>
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1rem; color:var(--g6);">
+        <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.88rem;">
+            <span style="width:12px;height:12px;border-radius:999px;background:#22c55e;display:inline-block;"></span> Rendah (&lt; 40)
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.88rem;">
+            <span style="width:12px;height:12px;border-radius:999px;background:#eab308;display:inline-block;"></span> Sedang (41&ndash;70)
+        </span>
+        <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.88rem;">
+            <span style="width:12px;height:12px;border-radius:999px;background:#dc2626;display:inline-block;"></span> Tinggi (71&ndash;100)
+        </span>
+    </div>
+</div>
+
+{{-- ── Menu Kaprodi ── --}}
+<div class="card">
+    <h2>Menu Kaprodi</h2>
+    <div class="menu-list">
+        <a href="{{ route('kaprodi.statistik') }}" class="menu-item">
+            <div class="menu-item__icon">
+                <svg viewBox="0 0 24 24">
+                    <line x1="18" y1="20" x2="18" y2="10"/>
+                    <line x1="12" y1="20" x2="12" y2="4"/>
+                    <line x1="6"  y1="20" x2="6"  y2="14"/>
                 </svg>
-            </a>
+            </div>
+            <div class="menu-item__info">
+                <p class="menu-item__title">Statistik Lengkap</p>
+                <p class="menu-item__desc">Lihat laporan dan analisis data burnout seluruh mahasiswa</p>
+            </div>
+            <svg class="menu-item__arrow" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </a>
 
-            <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}" class="menu-item">
-                <div class="menu-item__icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M17 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-                        <circle cx="12" cy="7" r="4"/>
-                    </svg>
-                </div>
-                <div class="menu-item__info">
-                    <p class="menu-item__title">Mahasiswa Bimbingan</p>
-                    <p class="menu-item__desc">Lihat daftar mahasiswa bimbingan saya</p>
-                </div>
-                <svg class="menu-item__arrow" viewBox="0 0 24 24">
-                    <polyline points="9 18 15 12 9 6"/>
+        <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}" class="menu-item">
+            <div class="menu-item__icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M17 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
                 </svg>
-            </a>
-        </div>
+            </div>
+            <div class="menu-item__info">
+                <p class="menu-item__title">Dosen & Mahasiswa Bimbingan</p>
+                <p class="menu-item__desc">Lihat daftar dosen beserta mahasiswa bimbingannya</p>
+            </div>
+            <svg class="menu-item__arrow" viewBox="0 0 24 24">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </a>
     </div>
-
-    {{-- Breakdown Risiko Prodi --}}
-    <div class="card">
-        <h2>Breakdown Risiko — Prodi</h2>
-        @php $totalProdi = max($totalMahasiswa, 1); @endphp
-        <div class="risiko-list">
-            <div class="risiko-row">
-                <div class="risiko-row__header">
-                    <span class="risiko-row__label">
-                        <span class="risiko-dot risiko-dot--rendah"></span>Rendah
-                    </span>
-                    <span class="risiko-row__count">{{ $rendahCount }} mahasiswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-bar__fill progress-bar__fill--rendah"
-                         style="width:{{ round(($rendahCount / $totalProdi) * 100) }}%"></div>
-                </div>
-            </div>
-            <div class="risiko-row">
-                <div class="risiko-row__header">
-                    <span class="risiko-row__label">
-                        <span class="risiko-dot risiko-dot--sedang"></span>Sedang
-                    </span>
-                    <span class="risiko-row__count">{{ $sedangCount }} mahasiswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-bar__fill progress-bar__fill--sedang"
-                         style="width:{{ round(($sedangCount / $totalProdi) * 100) }}%"></div>
-                </div>
-            </div>
-            <div class="risiko-row">
-                <div class="risiko-row__header">
-                    <span class="risiko-row__label">
-                        <span class="risiko-dot risiko-dot--tinggi"></span>Tinggi
-                    </span>
-                    <span class="risiko-row__count">{{ $tinggiCount }} mahasiswa</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-bar__fill progress-bar__fill--tinggi"
-                         style="width:{{ round(($tinggiCount / $totalProdi) * 100) }}%"></div>
-                </div>
-            </div>
-        </div>
-
-        <div style="border-top: 1px solid var(--g2); padding-top: 1rem; margin-top: 0.25rem;">
-            <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--g4); margin-bottom:0.75rem;">
-                Breakdown Bimbingan Saya
-            </p>
-            @php $totalBimbingan = max($totalMahasiswaBimbingan, 1); @endphp
-            <div class="risiko-list">
-                <div class="risiko-row">
-                    <div class="risiko-row__header">
-                        <span class="risiko-row__label">
-                            <span class="risiko-dot risiko-dot--rendah"></span>Rendah
-                        </span>
-                        <span class="risiko-row__count">{{ $rendahBimbingan }} mahasiswa</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar__fill progress-bar__fill--rendah"
-                             style="width:{{ round(($rendahBimbingan / $totalBimbingan) * 100) }}%"></div>
-                    </div>
-                </div>
-                <div class="risiko-row">
-                    <div class="risiko-row__header">
-                        <span class="risiko-row__label">
-                            <span class="risiko-dot risiko-dot--sedang"></span>Sedang
-                        </span>
-                        <span class="risiko-row__count">{{ $sedangBimbingan }} mahasiswa</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar__fill progress-bar__fill--sedang"
-                             style="width:{{ round(($sedangBimbingan / $totalBimbingan) * 100) }}%"></div>
-                    </div>
-                </div>
-                <div class="risiko-row">
-                    <div class="risiko-row__header">
-                        <span class="risiko-row__label">
-                            <span class="risiko-dot risiko-dot--tinggi"></span>Tinggi
-                        </span>
-                        <span class="risiko-row__count">{{ $tinggiBimbingan }} mahasiswa</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-bar__fill progress-bar__fill--tinggi"
-                             style="width:{{ round(($tinggiBimbingan / $totalBimbingan) * 100) }}%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 
 @endsection
 
+
+
 @section('scripts')
 <script>
-    const chartOptions = {
-        responsive: true,
-        cutout: '65%',
-        plugins: {
-            legend: {
-                position: 'bottom',
-                labels: {
-                    font: { size: 12, weight: 'bold' },
-                    padding: 16,
-                    usePointStyle: true,
-                    pointStyleWidth: 10,
-                    color: '#5a6278',
-                }
-            },
-            tooltip: {
-                backgroundColor: '#0d2d6b',
-                titleFont: { size: 12, weight: '700' },
-                bodyFont: { size: 12 },
-                padding: 12,
-                cornerRadius: 10,
-                callbacks: {
-                    label: function(context) {
-                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                        const pct   = total ? Math.round(context.parsed / total * 100) : 0;
-                        return `  ${context.label}: ${context.parsed} mahasiswa (${pct}%)`;
+    (function () {
+        const dosenData = @json($dosenData ?? []);
+
+        const combined = dosenData
+            .map(d => ({ id: d.id, label: d.name, avg: d.avg || 0, students: d.students || [] }))
+            .sort((a, b) => b.avg - a.avg);
+
+        const sortedLabels = combined.map(c => c.label);
+        const sortedAvgs   = combined.map(c => c.avg);
+        const bgColors     = combined.map(c => {
+            if (c.students.length === 0) return '#e2e8f0';
+            if (c.avg <= 40) return '#22c55e';
+            if (c.avg <= 70) return '#eab308';
+            return '#dc2626';
+        });
+
+        const canvas = document.getElementById('dosenBarChart');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedLabels,
+                    datasets: [{
+                        label: 'Rata-rata Skor',
+                        data: sortedAvgs,
+                        backgroundColor: bgColors,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }, grid: { display: false } },
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { stepSize: 10 },
+                            title: { display: true, text: 'Rentang Skor Burnout' },
+                            grid: { color: 'rgba(15,23,42,0.05)' }
+                        }
                     }
                 }
-            }
+            });
+
+            canvas.addEventListener('click', function (evt) {
+                const points = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+                if (!points.length) return;
+                const dosen = combined[points[0].index];
+                if (dosen) window.location.href = `/kaprodi/dosen/${dosen.id}/mahasiswa`;
+            });
         }
-    };
-
-    // Diagram Seluruh Prodi
-    new Chart(document.getElementById('riskChartProdi'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Rendah', 'Sedang', 'Tinggi'],
-            datasets: [{
-                data: [{{ $rendahCount }}, {{ $sedangCount }}, {{ $tinggiCount }}],
-                backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
-                borderWidth: 4,
-                borderColor: '#ffffff',
-                hoverOffset: 8
-            }]
-        },
-        options: chartOptions
-    });
-
-    // Diagram Mahasiswa Bimbingan
-    new Chart(document.getElementById('riskChartBimbingan'), {
-        type: 'doughnut',
-        data: {
-            labels: ['Rendah', 'Sedang', 'Tinggi'],
-            datasets: [{
-                data: [{{ $rendahBimbingan }}, {{ $sedangBimbingan }}, {{ $tinggiBimbingan }}],
-                backgroundColor: ['#22c55e', '#f59e0b', '#ef4444'],
-                borderWidth: 4,
-                borderColor: '#ffffff',
-                hoverOffset: 8
-            }]
-        },
-        options: chartOptions
-    });
+    })();
 </script>
 @endsection

@@ -43,7 +43,7 @@
 .laporan-wrapper {
     max-width: 780px;
     margin: 0 auto;
-    padding: 2rem 1rem 3rem;
+    padding: 1.25rem 0.75rem 2rem;
 }
 
 /* ── LAPORAN CARD UTAMA ───────────────────────────────────── */
@@ -57,7 +57,7 @@
 
 /* ── HEADER LAPORAN ───────────────────────────────────────── */
 .laporan-header {
-    padding: 2rem 2.5rem 1.5rem;
+    padding: 1.4rem 1.5rem 1.1rem;
     border-bottom: 1px solid var(--g2);
     display: flex;
     align-items: flex-start;
@@ -116,11 +116,12 @@
     text-transform: uppercase;
     color: var(--g4);
     padding: 1.5rem 2.5rem 0.75rem;
+    margin-bottom: 0.4rem;
 }
 
 /* ── ANALISIS BOX ─────────────────────────────────────────── */
 .analisis-box {
-    margin: 0 2rem 1.5rem;
+    margin: 0 1.5rem 1rem;
     border: 1px solid var(--g2);
     border-radius: var(--r-lg);
     display: flex;
@@ -137,7 +138,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
-    padding: 2rem 1.5rem;
+    padding: 1.35rem 1.25rem;
     background: var(--g1);
     border-right: 1px solid var(--g2);
 }
@@ -196,11 +197,11 @@
 
 .skor-detail {
     flex: 1;
-    padding: 1.75rem 2rem;
+    padding: 1.4rem 1.75rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.75rem;
+    gap: 0.65rem;
 }
 
 /* ── BADGE ────────────────────────────────────────────────── */
@@ -248,7 +249,7 @@
     gap: 0;
     border-top: 1px solid var(--g2);
 }
-.info-col { padding: 1.75rem 2.5rem; }
+.info-col { padding: 1.25rem 1.5rem; }
 .info-col:first-child { border-right: 1px solid var(--g2); }
 
 .info-col-title {
@@ -258,6 +259,83 @@
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--g8);
+}
+
+.dimension-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+    padding: 0 1.5rem 1rem;
+    max-width: 720px;
+    margin: 0 auto 1rem;
+}
+
+.dimension-card {
+    border: 1px solid var(--g2);
+    border-radius: var(--r-lg);
+    padding: 1rem;
+    background: var(--wh);
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.dimension-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dimension-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--bl7);
+}
+
+.dimension-card-badge {
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.35em 0.75em;
+    border-radius: 999px;
+    border: 1px solid var(--g2);
+}
+
+.dimension-card-badge.rendah { background: rgba(22,163,74,0.08); color: #166534; }
+.dimension-card-badge.sedang { background: rgba(161,98,7,0.08); color: #a16207; }
+.dimension-card-badge.tinggi { background: rgba(185,28,28,0.08); color: #b91c1c; }
+
+.dimension-card-score {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+}
+
+.dimension-card-score span {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.dimension-card-bar {
+    width: 100%;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--g1);
+    overflow: hidden;
+}
+
+.dimension-card-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bl5), var(--bl4));
+}
+
+.dimension-card-note {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--g6);
+    margin-top: 0.25rem;
     margin-bottom: 1.1rem;
 }
 .info-col-title svg {
@@ -393,14 +471,14 @@
 /* ── TABEL DETAIL ─────────────────────────────────────────── */
 .detail-card {
     background: var(--wh);
-    border-radius: var(--r-xl);
+    border-radius: var(--r-lg);
     border: 1px solid var(--g2);
     box-shadow: var(--sh-md);
     overflow: hidden;
-    margin-top: 1.5rem;
+    margin-top: 1rem;
 }
 .detail-card-header {
-    padding: 1.25rem 2rem;
+    padding: 0.9rem 1.25rem;
     border-bottom: 1px solid var(--g2);
     display: flex;
     align-items: center;
@@ -408,6 +486,78 @@
     font-size: 0.95rem;
     font-weight: 800;
     color: var(--g8);
+}
+.pagination-wrapper {
+    padding: 1rem 1.25rem 1.35rem;
+    display: flex;
+    justify-content: center;
+}
+nav[role="navigation"] {
+    display: flex;
+    justify-content: center;
+}
+
+nav[role="navigation"] > div:first-child {
+    display: none;
+}
+
+nav[role="navigation"] span[aria-current="page"] > span,
+nav[role="navigation"] a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 0.6em;
+    border-radius: var(--r-sm);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--g2);
+    margin: 0 2px;
+    transition: background var(--tr), border-color var(--tr), color var(--tr);
+}
+
+nav[role="navigation"] a {
+    color: var(--g6);
+    background: var(--wh);
+}
+
+nav[role="navigation"] a:hover {
+    background: var(--bl0);
+    border-color: var(--bl4);
+    color: var(--bl5);
+}
+
+nav[role="navigation"] span[aria-current="page"] > span {
+    background: linear-gradient(135deg, var(--bl5), var(--bl4));
+    border-color: transparent;
+    color: var(--wh);
+}
+
+nav[role="navigation"] span > span {
+    color: var(--g4);
+    background: var(--g1);
+    border: 1.5px solid var(--g2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin: 0;
+}
+.table thead th {
+    padding: 0.75rem 0.85rem;
+}
+.table tbody td {
+    padding: 0.65rem 0.95rem;
+    color: var(--g8);
+    vertical-align: middle;
+    line-height: 1.45;
 }
 .detail-card-header::before {
     content: '';
@@ -448,6 +598,20 @@
     vertical-align: middle;
     line-height: 1.55;
 }
+.info-desc {
+    font-size: 0.93rem;
+    line-height: 1.6;
+    color: var(--g6);
+}
+.single-info {
+    max-width: 720px;
+    margin: 0 auto 1.5rem;
+    padding: 0 2rem;
+}
+.single-info .info-col {
+    border: none;
+    padding: 1.25rem 0;
+}
 .table tbody td:first-child {
     font-weight: 700; color: var(--g4);
     font-size: 0.82rem; width: 48px;
@@ -474,9 +638,9 @@
 
 /* ── RESPONSIVE ───────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .laporan-wrapper { padding: 1rem 0.75rem 2rem; }
-    .laporan-header  { padding: 1.5rem 1.25rem 1.25rem; }
-    .section-label   { padding: 1.25rem 1.25rem 0.6rem; }
+    .laporan-wrapper { padding: 1rem 0.75rem 1.5rem; }
+    .laporan-header  { padding: 1.25rem 1.15rem 1rem; }
+    .section-label   { padding: 1rem 1.15rem 0.5rem; }
 
     .analisis-box {
         flex-direction: column;
@@ -536,24 +700,81 @@
     ];
     $statusTitle = $statusMap[$slug] ?? $level;
 
-    $rekomendasiMap = [
-        'rendah'        => [
-            'Pertahankan pola istirahat dan manajemen waktu yang sudah Anda terapkan.',
-            'Terus lakukan hobi atau kegiatan di luar akademik untuk menjaga keseimbangan.',
-            'Lakukan evaluasi mandiri secara berkala setiap akhir kelas.',
+    $dimensionScores = $percobaan->calculateDimensionScores();
+    $topDimension = $dimensionScores->first();
+
+    $dimensiInterpretasi = [
+        'Exhaustion' => [
+            'rendah' => ['Energi Anda masih relatif baik dan rasa lelah dapat diatasi dengan istirahat normal.', 'Keseimbangan aktivitas akademik dan istirahat masih terjaga secara umum.'],
+            'sedang' => ['Kelelahan mulai mempengaruhi fokus dan produktivitas Anda.', 'Perlu jeda yang lebih terstruktur agar energi tidak terus menurun.'],
+            'tinggi' => ['Anda menunjukkan tingkat kelelahan tinggi yang dapat mengganggu kemampuan belajar dan motivasi.', 'Istirahat dan pemulihan segera dibutuhkan untuk mencegah gangguan burnout lebih lanjut.'],
         ],
-        'sedang'        => [
-            'Mulai atur ulang jadwal belajar dan istirahat agar lebih seimbang.',
-            'Ceritakan kondisi Anda kepada dosen pembimbing atau konselor akademik.',
-            'Kurangi beban tugas yang tidak prioritas dan fokus pada kesehatan mental.',
+        'Mental Distance' => [
+            'rendah' => ['Keterikatan terhadap studi dan tujuan akademik masih baik.', 'Anda belum menunjukkan tanda-tanda menjauhkan diri secara emosional dari studi.'],
+            'sedang' => ['Anda mulai merasa terpisah dari tujuan akademik dan lingkungan belajar.', 'Perlu usaha untuk menemukan motivasi kembali dan menghubungkan studi dengan tujuan pribadi.'],
+            'tinggi' => ['Anda sangat cenderung menjauh secara mental dari studi, dan hal ini menurunkan keterlibatan Anda.', 'Coba cari kembali makna belajar serta dukungan sosial yang dapat membantu.'],
         ],
-        'tinggi'        => [
-            'Segera konsultasikan kondisi Anda dengan konselor atau psikolog kampus.',
-            'Ambil jeda dari aktivitas akademik yang membebani secara berlebihan.',
-            'Bangun sistem dukungan sosial dengan teman, keluarga, atau mentor.',
+        'Cognitive Impairment' => [
+            'rendah' => ['Kemampuan konsentrasi dan ingatan Anda masih terjaga dengan baik.', 'Anda mampu menyelesaikan tugas akademik dengan pemikiran yang relatif jernih.'],
+            'sedang' => ['Mulai muncul gangguan konsentrasi dan daya ingat yang membuat belajar lebih berat.', 'Atur waktu istirahat dan teknik belajar untuk menjaga kejernihan pikiran.'],
+            'tinggi' => ['Ada indikasi gangguan kognitif yang signifikan, seperti sulit fokus atau mengingat informasi.', 'Fokus pada pemulihan mental melalui istirahat terjadwal dan lingkungan belajar yang lebih tenang.'],
+        ],
+        'Emotional Impairment' => [
+            'rendah' => ['Emosi Anda relatif stabil dan belum terlalu memengaruhi aktivitas belajar.', 'Anda masih mampu menyeimbangkan perasaan dengan tanggung jawab akademik.'],
+            'sedang' => ['Emosi mulai mudah terganggu dan ini memengaruhi interaksi sehari-hari.', 'Perlu cara meredakan stres emosional sebelum hal tersebut menurunkan kinerja.'],
+            'tinggi' => ['Gangguan emosional tinggi bisa memperburuk penurunan motivasi dan hubungan sosial.', 'Pertimbangkan teknik relaksasi dan dukungan emosional untuk meredakan tekanan.'],
+        ],
+        'Psychological Distress' => [
+            'rendah' => ['Tingkat tekanan psikologis Anda relatif rendah dan masih dapat dikelola.', 'Anda berada dalam kondisi mental yang stabil untuk menyelesaikan tugas.'],
+            'sedang' => ['Anda merasakan tekanan psikologis yang mulai mengganggu kesejahteraan.', 'Amati sumber stres dan cari cara menguranginya melalui dukungan atau jeda.'],
+            'tinggi' => ['Tekanan psikologis tinggi dapat menyebabkan kecemasan, gangguan tidur, atau kelelahan emosional.', 'Segera cari bantuan konselor atau dukungan agar mental Anda kembali stabil.'],
+        ],
+        'Psychosomatic Complaints' => [
+            'rendah' => ['Keluhan fisik masih minim dan tidak terlalu memengaruhi aktivitas sehari-hari.', 'Tetap jaga kesehatan tubuh agar kondisi ini tidak bertambah buruk.'],
+            'sedang' => ['Ada keluhan fisik yang mulai mengganggu, seperti sakit kepala atau gangguan tidur.', 'Perhatikan pola tidur dan kebiasaan sehat untuk mengurangi gejala fisik.'],
+            'tinggi' => ['Keluhan psikosomatik tinggi dapat menandakan stres berat yang memengaruhi tubuh.', 'Segera perbaiki pola hidup, istirahat, dan jika perlu konsultasi medis ringan.'],
         ],
     ];
-    $rekomendasi = $rekomendasiMap[$slug] ?? [];
+
+    $dimensiRekomendasi = [
+        'Exhaustion' => [
+            'rendah' => ['Pertahankan pola istirahat yang cukup dan jadwal tidur teratur.', 'Lanjutkan pengaturan energi dengan jeda rutin antar sesi belajar.'],
+            'sedang' => ['Sisihkan waktu istirahat lebih panjang setiap hari.', 'Kurangi aktivitas berlebihan dan fokus pada tugas penting saja.'],
+            'tinggi' => ['Segera tambahkan hari istirahat dan kurangi beban akademik.', 'Bicarakan pengaturan tugas dengan dosen atau pembimbing.'],
+        ],
+        'Mental Distance' => [
+            'rendah' => ['Tetap pertahankan tujuan belajar dan keterlibatan Anda.', 'Bangun rutinitas yang membuat studi terasa bermakna.'],
+            'sedang' => ['Tentukan tujuan kecil yang jelas untuk tiap minggu.', 'Diskusikan pengalaman akademik Anda dengan teman atau pembimbing.'],
+            'tinggi' => ['Cari kembali alasan Anda belajar dan fokus pada hal-hal yang memotivasi.', 'Pertimbangkan bimbingan dari konselor untuk menemukan kembali arah akademik.'],
+        ],
+        'Cognitive Impairment' => [
+            'rendah' => ['Lanjutkan teknik belajar yang mendukung konsentrasi baik.', 'Istirahat teratur untuk menjaga kejernihan berpikir.'],
+            'sedang' => ['Gunakan teknik pemecahan tugas yang lebih sederhana.', 'Ambil waktu istirahat pendek setiap 45-60 menit belajar.'],
+            'tinggi' => ['Ciptakan lingkungan belajar yang tenang dan bebas gangguan.', 'Batasi multitasking dan fokus pada satu tugas dalam satu waktu.'],
+        ],
+        'Emotional Impairment' => [
+            'rendah' => ['Terus gunakan mekanisme koping yang menyehatkan.', 'Jaga keseimbangan emosi dengan eksplorasi aktivitas relaksasi.'],
+            'sedang' => ['Latih teknik pernapasan atau meditasi ringan.', 'Bicarakan perasaan Anda pada orang yang dipercayai.'],
+            'tinggi' => ['Konsultasi dengan konselor kampus dapat membantu menstabilkan emosi.', 'Gunakan dukungan teman atau keluarga untuk meredakan tekanan.'],
+        ],
+        'Psychological Distress' => [
+            'rendah' => ['Tetap jaga rutinitas mental yang sehat.', 'Luangkan waktu untuk aktivitas yang menyenangkan di luar studi.'],
+            'sedang' => ['Identifikasi sumber stres dan kurangi bila memungkinkan.', 'Luangkan waktu untuk relaksasi atau aktivitas fisik ringan.'],
+            'tinggi' => ['Konsultasi dukungan psikologis segera untuk mencegah masalah lebih parah.', 'Jangan menunda istirahat bila perasaan cemas atau tertekan meningkat.'],
+        ],
+        'Psychosomatic Complaints' => [
+            'rendah' => ['Pertahankan pola hidup sehat untuk mencegah keluhan fisik.', 'Jaga hidrasi dan istirahat yang cukup.'],
+            'sedang' => ['Perbaiki pola tidur dan aktivitas harian Anda.', 'Perhatikan sinyal tubuh dan kurangi stres fisik.'],
+            'tinggi' => ['Segera konsultasi medis ringan bila nyeri atau gangguan tidur berlanjut.', 'Kurangi tekanan aktivitas dan berikan tubuh waktu untuk pulih.'],
+        ],
+    ];
+
+    $rekomendasi = [];
+    $interpretasi = [];
+    if ($topDimension && isset($dimensiInterpretasi[$topDimension['kategori']][$topDimension['level']])) {
+        $interpretasi = $dimensiInterpretasi[$topDimension['kategori']][$topDimension['level']];
+        $rekomendasi = $dimensiRekomendasi[$topDimension['kategori']][$topDimension['level']] ?? [];
+    }
 @endphp
 
 <div class="laporan-wrapper">
@@ -615,7 +836,7 @@
         {{-- Interpretasi & Rekomendasi --}}
         <div class="info-grid">
             <div class="info-col col-interpretasi">
-                <div class="info-col-title">
+                    <div class="info-col-title">
                     <svg viewBox="0 0 24 24">
                         <circle cx="12" cy="12" r="10"/>
                         <line x1="12" y1="8"  x2="12" y2="12"/>
@@ -624,16 +845,23 @@
                     Interpretasi Skor
                 </div>
                 <ul class="info-list">
-                    @foreach(explode('.', $percobaan->levelRisiko->deskripsi) as $kalimat)
-                        @if(trim($kalimat))
+                    @if($topDimension && count($interpretasi))
+                        @foreach($interpretasi as $item)
                             <li>
                                 <svg viewBox="0 0 24 24">
                                     <polyline points="20 6 9 17 4 12"/>
                                 </svg>
-                                {{ trim($kalimat) }}.
+                                {{ $item }}
                             </li>
-                        @endif
-                    @endforeach
+                        @endforeach
+                    @else
+                        <li>
+                            <svg viewBox="0 0 24 24">
+                                <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                            Interpretasi berdasarkan dimensi tertinggi tidak tersedia.
+                        </li>
+                    @endif
                 </ul>
             </div>
 
@@ -647,18 +875,70 @@
                     Rekomendasi
                 </div>
                 <ul class="info-list">
-                    @foreach($rekomendasi as $item)
+                    @if(count($rekomendasi))
+                        @foreach($rekomendasi as $item)
+                            <li>
+                                <svg viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                                </svg>
+                                {{ $item }}
+                            </li>
+                        @endforeach
+                    @else
                         <li>
                             <svg viewBox="0 0 24 24">
                                 <circle cx="12" cy="12" r="1" fill="currentColor"/>
                                 <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
                             </svg>
-                            {{ $item }}
+                            Rekomendasi khusus belum tersedia untuk indikator ini.
                         </li>
-                    @endforeach
+                    @endif
                 </ul>
             </div>
         </div>
+
+        @php
+            $dimensionScores = $percobaan->calculateDimensionScores();
+            $topDimension = $dimensionScores->first();
+        @endphp
+
+
+        @if ($topDimension)
+            <div class="info-grid" style="border-bottom: none; margin-bottom: 1rem;">
+                <div class="info-col" style="padding-top: 0;">
+                    <div style="font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g4); margin-bottom: 1rem;">Indikator Tertinggi</div>
+                    <div class="dimension-card dimension-{{ $topDimension['level'] }}" style="margin: 0;">
+                        <div class="dimension-card-head">
+                            <span class="dimension-card-title">{{ $topDimension['kategori'] }}</span>
+                            <span class="dimension-card-badge {{ $topDimension['level'] }}">{{ ucfirst($topDimension['level']) }}</span>
+                        </div>
+                        <div class="dimension-card-score">
+                            <span>{{ $topDimension['percent'] }}%</span>
+                            <small>Rata-rata {{ number_format($topDimension['avg'], 2) }} / 5</small>
+                        </div>
+                        <div class="dimension-card-bar">
+                            <div class="dimension-card-fill" style="width: {{ $topDimension['percent'] }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-col" style="padding-top: 0;">
+                    <div style="font-size: 0.68rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--g4); margin-bottom: 1rem;">Rekomendasi Khusus</div>
+                    <div class="info-col-title">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 7v5"/>
+                            <path d="M12 14h.01"/>
+                        </svg>
+                        {{ $topDimension['kategori'] }} ({{ $topDimension['percent'] }}%)
+                    </div>
+                    <p class="info-desc" style="margin-top: 0.5rem;">{{ $rekomendasi[0] ?? 'Fokuskan perbaikan pada dimensi ini.' }}</p>
+                </div>
+            </div>
+        @else
+            <p class="status-desc">Data indikator tidak tersedia untuk dianalisis.</p>
+        @endif
 
         {{-- Action Bar --}}
         <div class="action-bar">
@@ -719,9 +999,9 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($percobaan->jawaban as $index => $jawaban)
+                @foreach ($jawabanPaginated as $index => $jawaban)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $jawabanPaginated->firstItem() + $index }}</td>
                         <td>{{ $jawaban->soal->pertanyaan }}</td>
                         <td>
                             <span class="kategori-pill">
@@ -733,6 +1013,11 @@
                 @endforeach
             </tbody>
         </table>
+        @if ($jawabanPaginated->hasPages())
+            <div class="pagination-wrapper">
+                {{ $jawabanPaginated->links() }}
+            </div>
+        @endif
     </div>
 
 </div>

@@ -122,6 +122,52 @@ h1::after {
     margin-bottom: 1.75rem;
 }
 
+.dimensi-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.dimensi-summary-item {
+    background: var(--wh);
+    border: 1px solid var(--g2);
+    border-radius: var(--r-lg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.dimensi-summary-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--bl7);
+}
+
+.dimensi-summary-value {
+    font-size: 1.8rem;
+    font-weight: 800;
+}
+
+.dimensi-summary-value.rendah { color: #15803d; }
+.dimensi-summary-value.sedang { color: #a16207; }
+.dimensi-summary-value.tinggi { color: #b91c1c; }
+
+.dimensi-summary-bar {
+    width: 100%;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--g1);
+    overflow: hidden;
+}
+
+.dimensi-summary-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--bl5), var(--bl4));
+}
+
 .card {
     background: var(--wh);
     border-radius: var(--r-lg);
@@ -466,6 +512,27 @@ h1::after {
     </div>
 
 </div>
+
+@if ($latestResult)
+    @php
+        $dimensionScores = $latestResult->calculateDimensionScores();
+    @endphp
+    <div class="card">
+        <h2>Analisis Dimensi Terbaru</h2>
+        <div class="dimensi-summary-grid">
+            @foreach($dimensionScores as $score)
+                <div class="dimensi-summary-item">
+                    <div class="dimensi-summary-title">{{ $score['kategori'] }}</div>
+                    <div class="dimensi-summary-value {{ $score['level'] }}">{{ $score['percent'] }}%</div>
+                    <div class="dimensi-summary-bar">
+                        <div class="dimensi-summary-fill" style="width: {{ $score['percent'] }}%;"></div>
+                    </div>
+                    <small>{{ ucfirst($score['level']) }}</small>
+                </div>
+            @endforeach
+        </div>
+    </div>
+@endif
 
 {{-- ═══ RIWAYAT TERBARU ═══ --}}
 <div class="card">

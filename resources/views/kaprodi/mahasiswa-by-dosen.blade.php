@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Daftar Mahasiswa Bimbingan')
+@section('title', 'Daftar Mahasiswa Bimbingan - ' . $dosen->name)
 
 @section('styles')
 <style>
 /* ============================================================
-   kaprodi/mahasiswa.blade.php — Custom CSS
+   kaprodi/mahasiswa.blade.php â€” Custom CSS
    Theme  : Blue & White | Elegant Gradient | Modern Responsive
    Konsisten dengan seluruh halaman sistem
    ============================================================ */
@@ -32,7 +32,7 @@
     --tr   : 0.22s cubic-bezier(.4, 0, .2, 1);
 }
 
-/* ── PAGE TITLE ──────────────────────────────────────────── */
+/* â”€â”€ PAGE TITLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 h1 {
     font-size: clamp(1.35rem, 3vw, 1.9rem);
     font-weight: 700;
@@ -52,7 +52,7 @@ h1::after {
     border-radius: 2px;
 }
 
-/* ── CARD ─────────────────────────────────────────────────── */
+/* â”€â”€ CARD â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .card {
     background: var(--wh);
     border-radius: var(--r-lg);
@@ -70,7 +70,7 @@ h1::after {
     transform: translateY(-2px);
 }
 
-/* Card tombol aksi (last) — dark bg, row layout */
+/* Card tombol aksi (last) â€” dark bg, row layout */
 .card:last-of-type {
     flex-direction: row;
     flex-wrap: wrap;
@@ -82,7 +82,7 @@ h1::after {
 }
 .card:last-of-type:hover { transform: none; }
 
-/* ── TABLE ────────────────────────────────────────────────── */
+/* â”€â”€ TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -138,20 +138,20 @@ h1::after {
     width: 48px;
 }
 
-/* Kolom Nama — bold biru */
+/* Kolom Nama â€” bold biru */
 .table tbody td:nth-child(2) {
     font-weight: 700;
     color: var(--bl9);
 }
 
-/* Kolom Email — monospace tipis */
+/* Kolom Email â€” monospace tipis */
 .table tbody td:nth-child(3) {
     font-size: 0.83rem;
     color: var(--g6);
     font-family: 'Courier New', monospace;
 }
 
-/* Kolom Kelas — pill */
+/* Kolom Kelas â€” pill */
 .table tbody td:nth-child(4) {
     text-align: center;
 }
@@ -170,7 +170,7 @@ h1::after {
     letter-spacing: 0.03em;
 }
 
-/* Kolom Skor — angka besar biru */
+/* Kolom Skor â€” angka besar biru */
 .table tbody td:nth-child(5) {
     font-weight: 800;
     font-size: 1rem;
@@ -182,7 +182,7 @@ h1::after {
     white-space: nowrap;
 }
 
-/* ── BADGE LEVEL RISIKO ───────────────────────────────────── */
+/* â”€â”€ BADGE LEVEL RISIKO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .badge {
     display: inline-flex;
     align-items: center;
@@ -202,7 +202,7 @@ h1::after {
 .badge-sangat-tinggi { background: #fce7f3; color: #be185d; }
 .badge-secondary     { background: var(--g2); color: var(--g6); }
 
-/* ── EMPTY STATE ─────────────────────────────────────────── */
+/* â”€â”€ EMPTY STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -218,7 +218,7 @@ h1::after {
     font-weight: 500;
 }
 
-/* ── PAGINATION ───────────────────────────────────────────── */
+/* â”€â”€ PAGINATION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 nav[aria-label="pagination"],
 .pagination-wrapper {
     display: flex;
@@ -286,7 +286,7 @@ nav[role="navigation"] a:hover {
     cursor: not-allowed;
 }
 
-/* ── BUTTON ───────────────────────────────────────────────── */
+/* â”€â”€ BUTTON â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn {
     display: inline-flex;
     align-items: center;
@@ -313,7 +313,7 @@ nav[role="navigation"] a:hover {
 }
 .btn:active { transform: translateY(0); }
 
-/* ── RESPONSIVE ───────────────────────────────────────────── */
+/* â”€â”€ RESPONSIVE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (max-width: 768px) {
     h1 { margin-bottom: 1.25rem; }
 
@@ -351,7 +351,7 @@ nav[role="navigation"] a:hover {
 @endsection
 
 @section('content')
-<h1>Daftar Mahasiswa Bimbingan</h1>
+<h1>Daftar Mahasiswa Bimbingan: {{ $dosen->name }}</h1>
 
 <div class="card">
     <table class="table">
@@ -397,7 +397,7 @@ nav[role="navigation"] a:hover {
                         @if ($mhs->percobaanTes->first())
                             {{ $mhs->percobaanTes->first()->total_skor }}
                         @else
-                            —
+                            -
                         @endif
                     </td>
                     <td>
@@ -406,7 +406,7 @@ nav[role="navigation"] a:hover {
                                 {{ $mhs->percobaanTes->first()->levelRisiko->nama_level }}
                             </span>
                         @else
-                            —
+                            -
                         @endif
                     </td>
                     <td>
@@ -420,16 +420,16 @@ nav[role="navigation"] a:hover {
                                     {{ $topDim['kategori'] }} ({{ $topDim['percent'] }}%)
                                 </span>
                             @else
-                                —
+                                -
                             @endif
                         @else
-                            —
+                            -
                         @endif
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">
+                    <td colspan="8">
                         <div class="empty-state">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -449,7 +449,7 @@ nav[role="navigation"] a:hover {
 </div>
 
 <div class="card">
-    <a href="{{ route('kaprodi.dashboard') }}" class="btn">
+    <a href="{{ route('kaprodi.statistik') }}" class="btn">
         Kembali 
     </a>
 </div>

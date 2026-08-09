@@ -161,6 +161,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/hasil-tes', [AdminController::class, 'hasilTes'])
             ->name('hasil.index');
+
+        Route::get('/hasil-tes/{id}/pdf', [AdminController::class, 'downloadTesPdf'])
+            ->name('hasil.download');
+
+        /* =========================
+           MAHASISWA BIMBINGAN PER DOSEN
+        ========================= */
+
+        Route::get('/mahasiswa', [AdminController::class, 'mahasiswaByDosen'])
+            ->name('mahasiswa.index');
     });
 
     /* =========================
@@ -194,6 +204,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/mahasiswa-bimbingan', [KaprodiController::class, 'mahasiswaBimbingan'])
             ->name('mahasiswa-bimbingan');
+
+        Route::get('/dosen/{id}/mahasiswa', [KaprodiController::class, 'mahasiswaByDosen'])
+            ->name('dosen.mahasiswa');
     });
 
     /* =========================

@@ -693,6 +693,13 @@
                             Level Risiko
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.hasil.index') }}"
+                           class="{{ request()->routeIs('admin.hasil.*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M7 9h10"/><path d="M7 13h6"/><path d="M7 17h4"/></svg>
+                            Hasil Tes
+                        </a>
+                    </li>
                 @endif
             @endauth
         </ul>

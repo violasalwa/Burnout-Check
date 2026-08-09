@@ -68,12 +68,94 @@ class KaprodiController extends Controller
             return $level;
         });
 
+        // compute top dosen across prodi (by number of bimbingan students who have taken tests)
+        $dosenStats = User::where('role', 'dosen')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($dosen) {
+                $mahasiswaIds = User::where('role', 'mahasiswa')
+                    ->where('dosen_id', $dosen->id)
+                    ->pluck('id');
+
+                if ($mahasiswaIds->isEmpty()) {
+                    $count = 0;
+                } else {
+                    $latestIds = PercobaanTes::selectRaw('MAX(id) as id')
+                        ->whereIn('pengguna_id', $mahasiswaIds)
+                        ->groupBy('pengguna_id')
+                        ->pluck('id');
+
+                    $count = $latestIds->count();
+                }
+
+                return (object) [
+                    'id' => $dosen->id,
+                    'name' => $dosen->name,
+                    'count' => $count,
+                ];
+            });
+
+        $topDosen = $dosenStats->sortByDesc('count')->first();
+
+        // Bar chart: avg burnout score per dosen (same logic as statistik())
+        $lowLevelIds    = \App\Models\LevelRisiko::where('nama_level', 'Rendah')->pluck('id')->toArray();
+        $mediumLevelIds = \App\Models\LevelRisiko::where('nama_level', 'Sedang')->pluck('id')->toArray();
+        $highLevelIds   = \App\Models\LevelRisiko::whereIn('nama_level', ['Tinggi', 'Sangat Tinggi'])->pluck('id')->toArray();
+
+        $dosenData = User::where('role', 'dosen')->orderBy('name')->get()
+            ->map(function ($dosen) use ($lowLevelIds, $mediumLevelIds, $highLevelIds) {
+                $mahasiswaIds = User::where('role', 'mahasiswa')
+                    ->where('dosen_id', $dosen->id)
+                    ->pluck('id');
+
+                if ($mahasiswaIds->isEmpty()) {
+                    $avgScore = 0;
+                    $students = collect();
+                } else {
+                    $latestIds = PercobaanTes::selectRaw('MAX(id) as id')
+                        ->whereIn('pengguna_id', $mahasiswaIds)
+                        ->groupBy('pengguna_id')
+                        ->pluck('id');
+
+                    $avgScore = PercobaanTes::whereIn('id', $latestIds)->avg('total_skor') ?? 0;
+
+                    $students = User::with('percobaanTes.levelRisiko')
+                        ->whereIn('id', $mahasiswaIds)
+                        ->get()
+                        ->map(function ($m) {
+                            $tes = $m->percobaanTes->sortByDesc('created_at')->first();
+                            return [
+                                'id'        => $m->id,
+                                'name'      => $m->name,
+                                'kelas'     => $m->kelas,
+                                'angkatan'  => $m->angkatan,
+                                'skor'      => $tes ? $tes->total_skor : null,
+                                'level'     => $tes && $tes->levelRisiko ? $tes->levelRisiko->nama_level : null,
+                            ];
+                        });
+                }
+
+                return (object) [
+                    'id'       => $dosen->id,
+                    'name'     => $dosen->name,
+                    'avg'      => round($avgScore, 1),
+                    'students' => $students->toArray(),
+                ];
+            });
+
+        $dosenLabels = $dosenData->pluck('name')->toArray();
+        $dosenAvgs   = $dosenData->pluck('avg')->toArray();
+
         return view('kaprodi.dashboard', compact(
             'totalMahasiswa',
             'totalDosen',
             'riskStats',
             'totalMahasiswaBimbingan',
-            'bimbinganStats'
+            'bimbinganStats',
+            'topDosen',
+            'dosenData',
+            'dosenLabels',
+            'dosenAvgs'
         ));
     }
 
@@ -120,9 +202,131 @@ class KaprodiController extends Controller
             ['path' => request()->url(), 'query' => request()->query()]
         );
 
+        // per-dosen aggregation for bar chart: number of mahasiswa (per dosen) who have a latest test
+        $lowLevelIds = LevelRisiko::where('nama_level', 'Rendah')->pluck('id')->toArray();
+        $mediumLevelIds = LevelRisiko::where('nama_level', 'Sedang')->pluck('id')->toArray();
+        $highLevelIds = LevelRisiko::whereIn('nama_level', ['Tinggi', 'Sangat Tinggi'])->pluck('id')->toArray();
+
+        $dosenAggregates = User::where('role', 'dosen')
+            ->orderBy('name')
+            ->get();
+
+        $dosenData = $dosenAggregates->map(function ($dosen) use ($lowLevelIds, $mediumLevelIds, $highLevelIds) {
+            $mahasiswaIds = User::where('role', 'mahasiswa')
+                ->where('dosen_id', $dosen->id)
+                ->pluck('id');
+
+            if ($mahasiswaIds->isEmpty()) {
+                $total = 0;
+                $lowCount = 0;
+                $mediumCount = 0;
+                $highCount = 0;
+                $avgScore = 0;
+                $students = collect();
+            } else {
+                $latestIds = PercobaanTes::selectRaw('MAX(id) as id')
+                    ->whereIn('pengguna_id', $mahasiswaIds)
+                    ->groupBy('pengguna_id')
+                    ->pluck('id');
+
+                $total = $latestIds->count();
+
+                $lowCount = PercobaanTes::whereIn('id', $latestIds)
+                    ->whereIn('level_risiko_id', $lowLevelIds)
+                    ->count();
+
+                $mediumCount = PercobaanTes::whereIn('id', $latestIds)
+                    ->whereIn('level_risiko_id', $mediumLevelIds)
+                    ->count();
+
+                $highCount = PercobaanTes::whereIn('id', $latestIds)
+                    ->whereIn('level_risiko_id', $highLevelIds)
+                    ->count();
+
+                $avgScore = PercobaanTes::whereIn('id', $latestIds)->avg('total_skor') ?? 0;
+
+                $students = User::with('percobaanTes.levelRisiko')
+                    ->whereIn('id', $mahasiswaIds)
+                    ->get()
+                    ->map(function ($m) {
+                        $tes = $m->percobaanTes->sortByDesc('created_at')->first();
+                        return [
+                            'id' => $m->id,
+                            'name' => $m->name,
+                            'kelas' => $m->kelas,
+                            'angkatan' => $m->angkatan,
+                            'email' => $m->email,
+                            'last_test' => $tes ? $tes->created_at->format('d M Y H:i') : null,
+                            'skor' => $tes ? $tes->total_skor : null,
+                            'level' => $tes && $tes->levelRisiko ? $tes->levelRisiko->nama_level : null,
+                        ];
+                    });
+            }
+
+            return (object) [
+                'id' => $dosen->id,
+                'name' => $dosen->name,
+                'total' => (int) $total,
+                'low' => (int) $lowCount,
+                'medium' => (int) $mediumCount,
+                'high' => (int) $highCount,
+                'avg' => round($avgScore, 1),
+                'students' => $students->toArray(),
+            ];
+        });
+
+        $dosenLabels = $dosenData->pluck('name')->toArray();
+        $dosenCounts = $dosenData->pluck('total')->toArray();
+        $dosenHighs = $dosenData->pluck('high')->toArray();
+        $dosenAvgs = $dosenData->pluck('avg')->toArray();
+
+        // --- high-risk per-dosen (Tinggi + Sangat Tinggi) ---
+        $highDosenAggregates = User::where('role', 'dosen')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($dosen) use ($highLevelIds) {
+                $mahasiswaIds = User::where('role', 'mahasiswa')
+                    ->where('dosen_id', $dosen->id)
+                    ->pluck('id');
+
+                if ($mahasiswaIds->isEmpty()) {
+                    $count = 0;
+                } else {
+                    $latestIds = PercobaanTes::selectRaw('MAX(id) as id')
+                        ->whereIn('pengguna_id', $mahasiswaIds)
+                        ->groupBy('pengguna_id')
+                        ->pluck('id');
+
+                    $count = PercobaanTes::whereIn('id', $latestIds)
+                        ->whereIn('level_risiko_id', $highLevelIds)
+                        ->count();
+                }
+
+                return (object) [
+                    'id' => $dosen->id,
+                    'name' => $dosen->name,
+                    'count' => $count,
+                ];
+            });
+
+        $highDosenLabels = $highDosenAggregates->pluck('name')->toArray();
+        $highDosenCounts = $highDosenAggregates->pluck('count')->toArray();
+
+        // --- top mahasiswa berisiko (urut berdasarkan level + tanggal) ---
+        $highLevelNames = ['sangat tinggi', 'tinggi'];
+        $topMahasiswa = $allMahasiswa->filter(function ($mhs) use ($highLevelNames) {
+            $tes = $mhs->percobaanTes->sortByDesc('created_at')->first();
+            if (!$tes || !$tes->levelRisiko) return false;
+            return in_array(strtolower($tes->levelRisiko->nama_level), $highLevelNames);
+        })->sortByDesc(function ($mhs) use ($levelOrder) {
+            $tes = $mhs->percobaanTes->sortByDesc('created_at')->first();
+            $nama = strtolower($tes->levelRisiko->nama_level);
+            return ($levelOrder[$nama] ?? 0) * 1000000000 + strtotime($tes->created_at);
+        })->values()->take(20);
+
         return view(
             'kaprodi.statistik',
-            compact('mahasiswa')
+            compact('mahasiswa', 'dosenData', 'dosenLabels', 'dosenCounts', 'dosenHighs', 'dosenAvgs', 'topMahasiswa')
         );
     }
 
@@ -148,6 +352,30 @@ class KaprodiController extends Controller
         return view(
             'kaprodi.mahasiswa-bimbingan',
             compact('mahasiswa')
+        );
+    }
+
+    public function mahasiswaByDosen($id)
+    {
+        $user = auth()->user();
+
+        if ($user->role !== 'kaprodi') {
+            abort(403, 'Akses ditolak');
+        }
+
+        $dosen = User::where('id', $id)->where('role', 'dosen')->firstOrFail();
+
+        $mahasiswa = User::with([
+                'percobaanTes.levelRisiko'
+            ])
+            ->where('role', 'mahasiswa')
+            ->where('dosen_id', $dosen->id)
+            ->latest()
+            ->paginate(10);
+
+        return view(
+            'kaprodi.mahasiswa-by-dosen',
+            compact('mahasiswa', 'dosen')
         );
     }
 }
