@@ -12,7 +12,7 @@ class DosenController extends Controller
      */
     public function index()
     {
-        $dosenId = auth()->id();
+        $dosenId = auth()->user()->dosenKaprodi ? auth()->user()->dosenKaprodi->id : null;
 
         /*
         |--------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class DosenController extends Controller
      */
     public function mahasiswa()
     {
-        $dosenId = auth()->id();
+        $dosenId = auth()->user()->dosenKaprodi ? auth()->user()->dosenKaprodi->id : null;
 
         $mahasiswas = User::with([
                 'percobaanTes' => function ($query) {
@@ -112,5 +112,10 @@ class DosenController extends Controller
             ->paginate(10);
 
         return view('dosen.mahasiswa', compact('mahasiswas'));
+    }
+
+    public function help()
+    {
+        return view('dosen.help');
     }
 }

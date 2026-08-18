@@ -29,7 +29,7 @@ class LevelRisikoSeeder extends Seeder
         \App\Models\LevelRisiko::create([
             'nama_level' => 'Tinggi',
             'skor_min' => 71,
-            'skor_max' => 165, // 33 * 5 = 165
+            'skor_max' => 100,
             'deskripsi' => 'Anda berada pada risiko tinggi burnout. Segera konsultasikan dengan dosen pembimbing atau layanan konseling mahasiswa.',
         ]);
     }

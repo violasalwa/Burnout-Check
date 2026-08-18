@@ -23,41 +23,53 @@ class UserSeeder extends Seeder
         // =========================
         // 🔥 KAPRODI
         // =========================
-        User::create([
+        $kaprodiUser = User::create([
             'name' => 'Kaprodi',
             'email' => 'kaprodi@campus.com',
             'password' => Hash::make('12345678'),
-            'role' => 'kaprodi',
+            'role' => null,
+        ]);
+        \App\Models\DosenKaprodi::create([
+            'user_id' => $kaprodiUser->id,
+            'nama' => 'Kaprodi',
+            'jabatan' => 'kaprodi',
         ]);
 
         // =========================
         // 🔥 DOSEN A - H
         // =========================
         $dosen = ['A','B','C','D','E','F','G','H'];
+        $dosenKaprodiIds = [];
 
         foreach ($dosen as $d) {
-            User::create([
+            $user = User::create([
                 'name' => "Dosen $d",
                 'email' => "dosen$d@campus.com",
                 'password' => Hash::make('12345678'),
-                'role' => 'dosen',
+                'role' => null,
             ]);
+            $dk = \App\Models\DosenKaprodi::create([
+                'user_id' => $user->id,
+                'nama' => "Dosen $d",
+                'jabatan' => 'dosen',
+            ]);
+            $dosenKaprodiIds[] = $dk->id;
         }
 
         // =========================
         // 🔥 MAHASISWA (CONTOH 5 ORANG)
         // kelas 5 - 8
         // =========================
-        $dosenIds = User::where('role', 'dosen')->pluck('id')->toArray();
-
         for ($i = 1; $i <= 5; $i++) {
             User::create([
                 'name' => "Mahasiswa $i",
                 'email' => "mhs$i@campus.com",
                 'password' => Hash::make('12345678'),
                 'role' => 'mahasiswa',
+                'nim' => '1000' . $i,
+                'ipk' => rand(250, 400) / 100,
                 'kelas' => rand(5, 8),
-                'dosen_id' => $dosenIds[array_rand($dosenIds)]
+                'dosen_id' => $dosenKaprodiIds[array_rand($dosenKaprodiIds)]
             ]);
         }
     }

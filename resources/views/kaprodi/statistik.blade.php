@@ -135,7 +135,17 @@
             .map(d => ({ id: d.id, label: d.name, avg: d.avg || 0, students: d.students || [] }))
             .sort((a, b) => b.avg - a.avg);
 
-        const sortedLabels = combined.map(c => c.label);
+        function getLetter(index) {
+            let res = '';
+            let curr = index;
+            while (curr >= 0) {
+                res = String.fromCharCode(65 + (curr % 26)) + res;
+                curr = Math.floor(curr / 26) - 1;
+            }
+            return res;
+        }
+
+        const sortedLabels = combined.map((c, i) => getLetter(i));
         const sortedAvgs = combined.map(c => c.avg);
         const bgColors = combined.map(c => {
             if (c.students.length === 0) return '#e2e8f0';
@@ -164,9 +174,19 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const idx = context[0].dataIndex;
+                                    return getLetter(idx) + ' - ' + combined[idx].label;
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }, grid: { display: false } },
+                        x: { ticks: { autoSkip: false, maxRotation: 0, minRotation: 0 }, grid: { display: false } },
                         y: { beginAtZero: true, max: 100, ticks: { stepSize: 10 }, title: { display: true, text: 'Rentang Skor Burnout' }, grid: { color: 'rgba(15, 23, 42, 0.05)' } }
                     }
                 }
@@ -180,6 +200,15 @@
                 if (dosen) {
                     window.location.href = `/kaprodi/dosen/${dosen.id}/mahasiswa`;
                 }
+            });
+        }
+
+        const legendListEl = document.getElementById('dosen-chart-legend-list');
+        if (legendListEl) {
+            combined.forEach((c, i) => {
+                const item = document.createElement('div');
+                item.innerHTML = `<strong>${getLetter(i)}</strong> = ${c.label}`;
+                legendListEl.appendChild(item);
             });
         }
 
@@ -233,7 +262,12 @@
     <div class="chart-wrap">
         <canvas id="dosenCombinedBarChart"></canvas>
     </div>
-    <div class="chart-legend">
+
+    <!-- Dosen Legend List -->
+    <div id="dosen-chart-legend-list" style="margin-top: 1.5rem; padding: 1rem; background: var(--g1); border-radius: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.95rem; color: var(--g8);">
+    </div>
+
+    <div class="chart-legend" style="margin-top: 1.5rem;">
         <span class="legend-item"><span class="dot dot-low"></span> Skor Rendah (&lt; 40)</span>
         <span class="legend-item"><span class="dot dot-medium"></span> Skor Sedang (41&ndash;70)</span>
         <span class="legend-item"><span class="dot dot-high"></span> Skor Tinggi (71&ndash;100)</span>
@@ -265,8 +299,11 @@
                 <thead>
                     <tr>
                         <th>No</th>
+                        <th>NIM</th>
                         <th>Nama</th>
                         <th>Kelas</th>
+                        <th>Angkatan</th>
+                        <th>IPK</th>
                         <th>Dosen Pembimbing</th>
                         <th>Level Risiko</th>
                         <th>Indikator Tertinggi</th>
@@ -279,6 +316,7 @@
                         @php $tes = $mhsItem->percobaanTes->sortByDesc('created_at')->first(); @endphp
                         <tr>
                             <td>{{ $mahasiswa->firstItem() + $i }}</td>
+                            <td>{{ $mhsItem->nim ?? '-' }}</td>
                             <td>{{ $mhsItem->name }}</td>
                             <td>
                                 @php
@@ -291,6 +329,8 @@
                                 @endphp
                                 <span style="display:inline-block; padding:0.2rem 0.6rem; border-radius:4px; background:var(--g1); color:var(--g7); font-size:0.8rem; font-weight:600;">{{ $kelasLabel }}</span>
                             </td>
+                            <td>{{ $mhsItem->angkatan ?? '-' }}</td>
+                            <td>{{ $mhsItem->ipk ?? '-' }}</td>
                             <td>{{ $mhsItem->dosen->name ?? '-' }}</td>
                             <td>
                                 @if($tes && $tes->levelRisiko)

@@ -291,6 +291,119 @@
             animation: dropIn 0.18s ease;
         }
 
+        /* ── NOTIFICATIONS ──────────────────────────────────────── */
+        .navbar__notif {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+        .navbar__notif-btn {
+            background: rgba(255,255,255,0.12);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--wh);
+            transition: all var(--tr);
+        }
+        .navbar__notif-btn:hover {
+            background: rgba(255,255,255,0.25);
+            border-color: rgba(255,255,255,0.45);
+        }
+        .navbar__notif-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        .navbar__notif-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 0.1em 0.4em;
+            min-width: 18px;
+            text-align: center;
+            border: 2px solid var(--bl7);
+        }
+        .navbar__notif-dropdown {
+            display: none;
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            width: 320px;
+            background: var(--wh);
+            border: 1px solid var(--g2);
+            border-radius: 14px;
+            box-shadow: 0 8px 32px rgba(13,45,107,0.18);
+            padding: 0;
+            z-index: 200;
+            overflow: hidden;
+        }
+        .navbar__notif.open .navbar__notif-dropdown {
+            display: block;
+            animation: dropIn 0.18s ease;
+        }
+        .navbar__notif-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--g2);
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--g8);
+            background: var(--g1);
+        }
+        .navbar__notif-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .navbar__notif-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 1rem;
+            border-bottom: 1px solid var(--g2);
+            text-decoration: none;
+            color: var(--g8);
+            transition: background var(--tr);
+            background: #fff;
+        }
+        .navbar__notif-item:hover {
+            background: var(--g1);
+        }
+        .navbar__notif-item.unread {
+            background: #f0f7ff;
+        }
+        .navbar__notif-item:last-child {
+            border-bottom: none;
+        }
+        .navbar__notif-time {
+            font-size: 0.7rem;
+            color: var(--g4);
+        }
+        .navbar__notif-text {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .navbar__notif-empty {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--g6);
+            font-size: 0.85rem;
+        }
+
         @keyframes dropIn {
             from { opacity: 0; transform: translateY(-8px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -596,75 +709,7 @@
 
         <ul class="navbar__menu">
             @auth
-                @if (auth()->user()->role === 'mahasiswa')
-                    <li>
-                        <a href="{{ route('mahasiswa.dashboard') }}"
-                           class="{{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('mahasiswa.tes.index') }}"
-                           class="{{ request()->routeIs('mahasiswa.tes.*') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-                            Mulai Tes
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('mahasiswa.history') }}"
-                           class="{{ request()->routeIs('mahasiswa.history') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                            Riwayat
-                        </a>
-                    </li>
-
-                @elseif (auth()->user()->role === 'dosen')
-                    <li>
-                        <a href="{{ route('dosen.dashboard') }}"
-                           class="{{ request()->routeIs('dosen.dashboard') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('dosen.mahasiswa') }}"
-                           class="{{ request()->routeIs('dosen.mahasiswa') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
-                            Data Mahasiswa
-                        </a>
-                    </li>
-
-                @elseif (auth()->user()->role === 'kaprodi')
-                    <li>
-                        <a href="{{ route('kaprodi.dashboard') }}"
-                           class="{{ request()->routeIs('kaprodi.dashboard') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('kaprodi.statistik') }}"
-                           class="{{ request()->routeIs('kaprodi.statistik') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            Statistik
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}"
-                        class="{{ request()->routeIs('kaprodi.mahasiswa-bimbingan') ? 'active' : '' }}">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-                                <circle cx="9" cy="7" r="4"/>
-                                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-                                <path d="M16 3.13a4 4 0 010 7.75"/>
-                            </svg>
-                            Mahasiswa Bimbingan
-                        </a>
-                    </li>
-
-
-                @elseif (auth()->user()->role === 'admin')
+                @if (auth()->user()->role === 'admin')
                     <li>
                         <a href="{{ route('admin.dashboard') }}"
                            class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
@@ -700,6 +745,73 @@
                             Hasil Tes
                         </a>
                     </li>
+
+                @elseif (auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'kaprodi')
+                    <li>
+                        <a href="{{ route('kaprodi.dashboard') }}"
+                           class="{{ request()->routeIs('kaprodi.dashboard') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('kaprodi.statistik') }}"
+                           class="{{ request()->routeIs('kaprodi.statistik') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            Statistik
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}"
+                        class="{{ request()->routeIs('kaprodi.mahasiswa-bimbingan') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                            Mahasiswa Bimbingan
+                        </a>
+                    </li>
+
+                @elseif (auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'dosen')
+                    <li>
+                        <a href="{{ route('dosen.dashboard') }}"
+                           class="{{ request()->routeIs('dosen.dashboard') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('dosen.mahasiswa') }}"
+                           class="{{ request()->routeIs('dosen.mahasiswa') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                            Data Mahasiswa
+                        </a>
+                    </li>
+
+                @else
+                    <li>
+                        <a href="{{ route('mahasiswa.dashboard') }}"
+                           class="{{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('mahasiswa.tes.index') }}"
+                           class="{{ request()->routeIs('mahasiswa.tes.*') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+                            Mulai Tes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('mahasiswa.history') }}"
+                           class="{{ request()->routeIs('mahasiswa.history') ? 'active' : '' }}">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            Riwayat
+                        </a>
+                    </li>
                 @endif
             @endauth
         </ul>
@@ -714,6 +826,97 @@
         @endguest
 
         @auth
+        
+        @php
+            $helpRoute = null;
+            if(auth()->user()->role === 'admin') {
+                $helpRoute = route('admin.help');
+            } elseif(auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'kaprodi') {
+                $helpRoute = route('kaprodi.help');
+            } elseif(auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'dosen') {
+                $helpRoute = route('dosen.help');
+            }
+        @endphp
+        
+        @if($helpRoute)
+        <div class="navbar__notif" style="margin-right: 5px;">
+            <a href="{{ $helpRoute }}" class="navbar__notif-btn" title="Bantuan" style="text-decoration: none;">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </a>
+        </div>
+        @endif
+
+        @if(auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'kaprodi')
+            @php
+                $unreadCount = auth()->user()->unreadNotifications->count();
+                $recentNotifications = auth()->user()->notifications()->take(10)->get();
+            @endphp
+            <div class="navbar__notif" id="notifDropdown">
+                <button class="navbar__notif-btn" onclick="toggleNotif()" type="button">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                    @if($unreadCount > 0)
+                        <span class="navbar__notif-badge">{{ $unreadCount }}</span>
+                    @endif
+                </button>
+                <div class="navbar__notif-dropdown">
+                    <div class="navbar__notif-header">
+                        Notifikasi
+                    </div>
+                    <div class="navbar__notif-list">
+                        @if($recentNotifications->count() > 0)
+                            @foreach($recentNotifications as $notification)
+                                @if(is_null($notification->read_at))
+                                    <form action="{{ route('kaprodi.notifications.read', $notification->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="navbar__notif-item unread" style="border:none; width:100%; text-align:left; cursor:pointer;">
+                                            <div class="navbar__notif-text">
+                                                <strong>{{ $notification->data['student_name'] }}</strong>
+                                                @if(isset($notification->data['dosen']))
+                                                    <br>
+                                                    <span style="font-size: 0.75rem; color: var(--g6);">Dosen: {{ $notification->data['dosen'] }}</span>
+                                                @endif
+                                                <br>
+                                                <span style="color: {{ strtolower($notification->data['level'] ?? '') === 'sangat tinggi' ? '#b91c1c' : '#ef4444' }}; font-weight: 600;">
+                                                    Risiko {{ $notification->data['level'] ?? 'Tinggi' }} (Skor: {{ $notification->data['skor'] ?? '-' }})
+                                                </span>
+                                            </div>
+                                            <span class="navbar__notif-time" style="margin-top: 0.3rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                        </button>
+                                    </form>
+                                @else
+                                    <div class="navbar__notif-item" style="border:none; width:100%; text-align:left;">
+                                        <div class="navbar__notif-text">
+                                            <strong>{{ $notification->data['student_name'] }}</strong>
+                                            @if(isset($notification->data['dosen']))
+                                                <br>
+                                                <span style="font-size: 0.75rem; color: var(--g6);">Dosen: {{ $notification->data['dosen'] }}</span>
+                                            @endif
+                                            <br>
+                                            <span style="color: {{ strtolower($notification->data['level'] ?? '') === 'sangat tinggi' ? '#b91c1c' : '#ef4444' }}; font-weight: 600;">
+                                                Risiko {{ $notification->data['level'] ?? 'Tinggi' }} (Skor: {{ $notification->data['skor'] ?? '-' }})
+                                            </span>
+                                        </div>
+                                        <span class="navbar__notif-time" style="margin-top: 0.3rem;">{{ $notification->created_at->diffForHumans() }}</span>
+                                    </div>
+                                @endif
+                            @endforeach
+                        @else
+                            <div class="navbar__notif-empty">
+                                Tidak ada notifikasi
+                            </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="navbar__user" id="userDropdown">
             <button class="navbar__user-btn" onclick="toggleDropdown()" type="button">
                 <div class="navbar__avatar">
@@ -726,7 +929,15 @@
                 </div>
                 <div class="navbar__user-info">
                     <div class="navbar__user-name">{{ auth()->user()->name }}</div>
-                    <div class="navbar__user-role">{{ ucfirst(auth()->user()->role) }}</div>
+                    <div class="navbar__user-role">
+                        @if (auth()->user()->role === 'admin')
+                            Admin
+                        @elseif (auth()->user()->dosenKaprodi)
+                            {{ ucfirst(auth()->user()->dosenKaprodi->jabatan) }}
+                        @else
+                            Mahasiswa
+                        @endif
+                    </div>
                 </div>
                 <svg class="navbar__chevron" viewBox="0 0 24 24">
                     <polyline points="6 9 12 15 18 9"/>
@@ -763,7 +974,19 @@
     ═══════════════════════════════════════════════════════ --}}
     <div class="navbar__mobile" id="mobileNav">
         @auth
-            @if (auth()->user()->role === 'mahasiswa')
+            @if (auth()->user()->role === 'admin')
+                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
+                <a href="{{ route('admin.users.index') }}">Users</a>
+                <a href="{{ route('admin.soal.index') }}">Soal</a>
+                <a href="{{ route('admin.risk-levels.index') }}">Level Risiko</a>
+            @elseif (auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'kaprodi')
+                <a href="{{ route('kaprodi.dashboard') }}">Dashboard</a>
+                <a href="{{ route('kaprodi.statistik') }}">Statistik</a>
+                <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}">Mahasiswa Bimbingan</a>
+            @elseif (auth()->user()->dosenKaprodi && auth()->user()->dosenKaprodi->jabatan === 'dosen')
+                <a href="{{ route('dosen.dashboard') }}">Dashboard</a>
+                <a href="{{ route('dosen.mahasiswa') }}">Data Mahasiswa</a>
+            @else
                 <a href="{{ route('mahasiswa.dashboard') }}" class="{{ request()->routeIs('mahasiswa.dashboard') ? 'active' : '' }}">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                     Dashboard
@@ -776,18 +999,6 @@
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     Riwayat
                 </a>
-            @elseif (auth()->user()->role === 'dosen')
-                <a href="{{ route('dosen.dashboard') }}">Dashboard</a>
-                <a href="{{ route('dosen.mahasiswa') }}">Data Mahasiswa</a>
-            @elseif (auth()->user()->role === 'kaprodi')
-                <a href="{{ route('kaprodi.dashboard') }}">Dashboard</a>
-                <a href="{{ route('kaprodi.statistik') }}">Statistik</a>
-                <a href="{{ route('kaprodi.mahasiswa-bimbingan') }}">Mahasiswa Bimbingan</a>
-            @elseif (auth()->user()->role === 'admin')
-                <a href="{{ route('admin.dashboard') }}">Dashboard</a>
-                <a href="{{ route('admin.users.index') }}">Users</a>
-                <a href="{{ route('admin.soal.index') }}">Soal</a>
-                <a href="{{ route('admin.risk-levels.index') }}">Level Risiko</a>
             @endif
 
             <div class="mob-divider"></div>
@@ -880,14 +1091,38 @@
             const dropdown = document.getElementById('userDropdown');
             if (dropdown) dropdown.classList.toggle('open');
         }
+        function toggleNotif() {
+            const dropdown = document.getElementById('notifDropdown');
+            if (dropdown) {
+                dropdown.classList.toggle('open');
+                if (dropdown.classList.contains('open')) {
+                    const badge = dropdown.querySelector('.navbar__notif-badge');
+                    if (badge && badge.style.display !== 'none') {
+                        badge.style.display = 'none';
+                        
+                        fetch("{{ route('kaprodi.notifications.read-all') ?? '#' }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Accept': 'application/json'
+                            }
+                        }).catch(err => console.error(err));
+                    }
+                }
+            }
+        }
         function toggleMobile() {
             const mobileNav = document.getElementById('mobileNav');
             if (mobileNav) mobileNav.classList.toggle('open');
         }
         document.addEventListener('click', function(e) {
-            const dropdown = document.getElementById('userDropdown');
-            if (dropdown && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('open');
+            const userDropdown = document.getElementById('userDropdown');
+            if (userDropdown && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('open');
+            }
+            const notifDropdown = document.getElementById('notifDropdown');
+            if (notifDropdown && !notifDropdown.contains(e.target)) {
+                notifDropdown.classList.remove('open');
             }
         });
     </script>

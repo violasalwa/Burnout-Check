@@ -36,4 +36,5 @@ class MahasiswaController extends Controller
 
         return view('mahasiswa.history', compact('history'));
     }
+
 }

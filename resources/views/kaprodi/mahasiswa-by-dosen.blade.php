@@ -82,11 +82,23 @@ h1::after {
 }
 .card:last-of-type:hover { transform: none; }
 
-/* â”€â”€ TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/* ── TABLE ────────────────────────────────────────────────── */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
 .table {
     width: 100%;
+    min-width: 1000px;
     border-collapse: collapse;
     font-size: 0.88rem;
+}
+
+.table th,
+.table td {
+    white-space: nowrap;
 }
 
 .table thead tr {
@@ -354,14 +366,17 @@ nav[role="navigation"] a:hover {
 <h1>Daftar Mahasiswa Bimbingan: {{ $dosen->name }}</h1>
 
 <div class="card">
-    <table class="table">
-        <thead>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
             <tr>
                 <th>No</th>
+                <th>NIM</th>
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Kelas</th>
                 <th>Angkatan</th>
+                <th>IPK</th>
                 <th>Skor Terbaru</th>
                 <th>Level Risiko</th>
                 <th>Indikator Tertinggi</th>
@@ -371,6 +386,7 @@ nav[role="navigation"] a:hover {
             @forelse ($mahasiswa as $index => $mhs)
                 <tr>
                     <td>{{ $mahasiswa->firstItem() + $index }}</td>
+                    <td>{{ $mhs->nim ?? '-' }}</td>
                     <td>{{ $mhs->name }}</td>
                     <td>{{ $mhs->email }}</td>
                     <td>
@@ -393,6 +409,7 @@ nav[role="navigation"] a:hover {
                         </span>
                     </td>
                     <td>{{ $mhs->angkatan ?? '-' }}</td>
+                    <td>{{ $mhs->ipk ?? '-' }}</td>
                     <td>
                         @if ($mhs->percobaanTes->first())
                             {{ $mhs->percobaanTes->first()->total_skor }}
@@ -429,7 +446,7 @@ nav[role="navigation"] a:hover {
                 </tr>
             @empty
                 <tr>
-                    <td colspan="8">
+                    <td colspan="10">
                         <div class="empty-state">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -441,7 +458,8 @@ nav[role="navigation"] a:hover {
                 </tr>
             @endforelse
         </tbody>
-    </table>
+        </table>
+    </div>
 
     <div style="margin-top: 1.5rem;">
         {{ $mahasiswa->links() }}

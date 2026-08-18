@@ -46,7 +46,7 @@
                 @foreach($dosen as $d)
                     <option value="{{ $d->id }}"
                         {{ $user->dosen_id == $d->id ? 'selected' : '' }}>
-                        {{ $d->name }}
+                        {{ $d->nama }}
                     </option>
                 @endforeach
             </select>

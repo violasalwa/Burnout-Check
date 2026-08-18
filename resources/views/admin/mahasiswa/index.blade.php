@@ -175,6 +175,7 @@ h1 {
 .table td {
     padding: 1rem 1.15rem;
     border-bottom: 1px solid var(--g2);
+    white-space: nowrap;
 }
 
 .table tbody tr:hover {
@@ -220,7 +221,25 @@ h1 {
 }
 
 @media (max-width: 760px) {
-    .table { display: block; overflow-x: auto; }
+    .table-responsive { display: block; overflow-x: auto; }
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-top: 1rem;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    font-size: 0.92rem;
+    min-width: 1000px;
+    border-radius: var(--r-sm);
+    overflow: hidden;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
 }
 </style>
 @endsection
@@ -237,7 +256,7 @@ h1 {
                 <option value="">-- Pilih Dosen Pembimbing --</option>
                 @foreach ($dosens as $dosen)
                     <option value="{{ $dosen->id }}" {{ optional($selectedDosen)->id == $dosen->id ? 'selected' : '' }}>
-                        {{ $dosen->name }}
+                        {{ $dosen->nama }}
                     </option>
                 @endforeach
             </select>
@@ -250,74 +269,80 @@ h1 {
 
     @if ($selectedDosen)
         <div style="margin-bottom: 1rem; color: var(--g6);">
-            Menampilkan mahasiswa bimbingan <strong>{{ $selectedDosen->name }}</strong>.
+            Menampilkan mahasiswa bimbingan <strong>{{ $selectedDosen->nama }}</strong>.
         </div>
     @endif
 
     @if ($selectedDosen && $mahasiswas)
         @if ($mahasiswas->count())
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Kelas</th>
-                        <th>Angkatan</th>
-                        <th>Skor Terbaru</th>
-                        <th>Level Risiko</th>
-                        <th>Indikator Tertinggi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($mahasiswas as $index => $mahasiswa)
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
                         <tr>
-                            <td>{{ $mahasiswas->firstItem() + $index }}</td>
-                            <td>{{ $mahasiswa->name }}</td>
-                            <td>{{ $mahasiswa->email }}</td>
-                            <td>{{ $mahasiswa->kelas ? 'Kelas ' . chr(60 + $mahasiswa->kelas) : '-' }}</td>
-                            <td>{{ $mahasiswa->angkatan ?? '-' }}</td>
-                            <td>{{ optional($mahasiswa->percobaanTes->first())->total_skor ?? '-' }}</td>
-                            <td>
-                                @if ($mahasiswa->percobaanTes->first()?->levelRisiko)
-                                    <span class="badge badge-{{ strtolower(str_replace(' ', '-', $mahasiswa->percobaanTes->first()->levelRisiko->nama_level)) }}">
-                                        {{ $mahasiswa->percobaanTes->first()->levelRisiko->nama_level }}
-                                    </span>
-                                @else
-                                    <span class="badge badge-secondary">Belum Tes</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($mahasiswa->percobaanTes->first())
-                                    @php
-                                        $dimScores = $mahasiswa->percobaanTes->first()->calculateDimensionScores();
-                                        $topDim = $dimScores ? $dimScores->first() : null;
-                                    @endphp
-                                    @if($topDim)
-                                        <span class="badge badge-{{ strtolower(str_replace(' ', '-', $topDim['level'])) }}">
-                                            {{ $topDim['kategori'] }} ({{ $topDim['percent'] }}%)
+                            <th>No</th>
+                            <th>NIM</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Kelas</th>
+                            <th>Angkatan</th>
+                            <th>IPK</th>
+                            <th>Skor Terbaru</th>
+                            <th>Level Risiko</th>
+                            <th>Indikator Tertinggi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($mahasiswas as $index => $mahasiswa)
+                            <tr>
+                                <td>{{ $mahasiswas->firstItem() + $index }}</td>
+                                <td>{{ $mahasiswa->nim ?? '-' }}</td>
+                                <td>{{ $mahasiswa->name }}</td>
+                                <td>{{ $mahasiswa->email }}</td>
+                                <td>{{ $mahasiswa->kelas ? 'Kelas ' . chr(60 + $mahasiswa->kelas) : '-' }}</td>
+                                <td>{{ $mahasiswa->angkatan ?? '-' }}</td>
+                                <td>{{ $mahasiswa->ipk ?? '-' }}</td>
+                                <td>{{ optional($mahasiswa->percobaanTes->first())->total_skor ?? '-' }}</td>
+                                <td>
+                                    @if ($mahasiswa->percobaanTes->first()?->levelRisiko)
+                                        <span class="badge badge-{{ strtolower(str_replace(' ', '-', $mahasiswa->percobaanTes->first()->levelRisiko->nama_level)) }}">
+                                            {{ $mahasiswa->percobaanTes->first()->levelRisiko->nama_level }}
                                         </span>
+                                    @else
+                                        <span class="badge badge-secondary">Belum Tes</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($mahasiswa->percobaanTes->first())
+                                        @php
+                                            $dimScores = $mahasiswa->percobaanTes->first()->calculateDimensionScores();
+                                            $topDim = $dimScores ? $dimScores->first() : null;
+                                        @endphp
+                                        @if($topDim)
+                                            <span class="badge badge-{{ strtolower(str_replace(' ', '-', $topDim['level'])) }}">
+                                                {{ $topDim['kategori'] }} ({{ $topDim['percent'] }}%)
+                                            </span>
+                                        @else
+                                            <span class="badge badge-secondary">-</span>
+                                        @endif
                                     @else
                                         <span class="badge badge-secondary">-</span>
                                     @endif
-                                @else
-                                    <span class="badge badge-secondary">-</span>
-                                @endif
-                            </td>
-                            <td>
-                                @if ($mahasiswa->percobaanTes->first())
-                                    <a href="{{ route('admin.hasil.download', $mahasiswa->percobaanTes->first()->id) }}" class="btn" style="padding:0.55rem 0.85rem; font-size:0.8rem; background: linear-gradient(135deg, var(--bl5), var(--bl4)); color: var(--wh); text-decoration:none;">
-                                        Download PDF
-                                    </a>
-                                @else
-                                    <span class="badge badge-secondary">Tidak tersedia</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                </td>
+                                <td>
+                                    @if ($mahasiswa->percobaanTes->first())
+                                        <a href="{{ route('admin.hasil.download', $mahasiswa->percobaanTes->first()->id) }}" class="btn" style="padding:0.55rem 0.85rem; font-size:0.8rem; background: linear-gradient(135deg, var(--bl5), var(--bl4)); color: var(--wh); text-decoration:none;">
+                                            Download PDF
+                                        </a>
+                                    @else
+                                        <span class="badge badge-secondary">Tidak tersedia</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
 
             <div class="pagination">
                 {{ $mahasiswas->links() }}

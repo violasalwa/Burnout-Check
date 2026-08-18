@@ -496,57 +496,18 @@ h1::after {
 
 </div>
 
-{{-- ── Breakdown Distribusi Risiko ── --}}
-@php $totalProdi = max($totalMahasiswa, 1); @endphp
-<div class="card" style="margin-bottom:1.75rem;">
-    <h2>Distribusi Risiko — Seluruh Prodi</h2>
-    <div class="risiko-list">
-        <div class="risiko-row">
-            <div class="risiko-row__header">
-                <span class="risiko-row__label">
-                    <span class="risiko-dot risiko-dot--rendah"></span>Rendah
-                </span>
-                <span class="risiko-row__count">{{ $rendahCount }} mahasiswa</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-bar__fill progress-bar__fill--rendah"
-                     style="width:{{ round(($rendahCount / $totalProdi) * 100) }}%"></div>
-            </div>
-        </div>
-        <div class="risiko-row">
-            <div class="risiko-row__header">
-                <span class="risiko-row__label">
-                    <span class="risiko-dot risiko-dot--sedang"></span>Sedang
-                </span>
-                <span class="risiko-row__count">{{ $sedangCount }} mahasiswa</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-bar__fill progress-bar__fill--sedang"
-                     style="width:{{ round(($sedangCount / $totalProdi) * 100) }}%"></div>
-            </div>
-        </div>
-        <div class="risiko-row">
-            <div class="risiko-row__header">
-                <span class="risiko-row__label">
-                    <span class="risiko-dot risiko-dot--tinggi"></span>Tinggi
-                </span>
-                <span class="risiko-row__count">{{ $tinggiCount }} mahasiswa</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-bar__fill progress-bar__fill--tinggi"
-                     style="width:{{ round(($tinggiCount / $totalProdi) * 100) }}%"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {{-- ── Bar Chart Per Dosen ── --}}
 <div class="card" style="margin-bottom:1.75rem;">
     <h2>Rata-rata Skor Burnout Mahasiswa Per Dosen</h2>
     <div style="position:relative; min-height:360px;">
         <canvas id="dosenBarChart"></canvas>
     </div>
-    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1rem; color:var(--g6);">
+
+    <!-- Dosen Legend List -->
+    <div id="dosen-chart-legend-list" style="margin-top: 1.5rem; padding: 1rem; background: var(--g1); border-radius: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; font-size: 0.95rem; color: var(--g8);">
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:1rem; margin-top:1.5rem; color:var(--g6);">
         <span style="display:inline-flex; align-items:center; gap:0.5rem; font-size:0.88rem;">
             <span style="width:12px;height:12px;border-radius:999px;background:#22c55e;display:inline-block;"></span> Rendah (&lt; 40)
         </span>
@@ -611,7 +572,17 @@ h1::after {
             .map(d => ({ id: d.id, label: d.name, avg: d.avg || 0, students: d.students || [] }))
             .sort((a, b) => b.avg - a.avg);
 
-        const sortedLabels = combined.map(c => c.label);
+        function getLetter(index) {
+            let res = '';
+            let curr = index;
+            while (curr >= 0) {
+                res = String.fromCharCode(65 + (curr % 26)) + res;
+                curr = Math.floor(curr / 26) - 1;
+            }
+            return res;
+        }
+
+        const sortedLabels = combined.map((c, i) => getLetter(i));
         const sortedAvgs   = combined.map(c => c.avg);
         const bgColors     = combined.map(c => {
             if (c.students.length === 0) return '#e2e8f0';
@@ -637,9 +608,19 @@ h1::after {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    const idx = context[0].dataIndex;
+                                    return getLetter(idx) + ' - ' + combined[idx].label;
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        x: { ticks: { autoSkip: false, maxRotation: 45, minRotation: 0 }, grid: { display: false } },
+                        x: { ticks: { autoSkip: false, maxRotation: 0, minRotation: 0 }, grid: { display: false } },
                         y: {
                             beginAtZero: true,
                             max: 100,
@@ -656,6 +637,15 @@ h1::after {
                 if (!points.length) return;
                 const dosen = combined[points[0].index];
                 if (dosen) window.location.href = `/kaprodi/dosen/${dosen.id}/mahasiswa`;
+            });
+        }
+
+        const legendListEl = document.getElementById('dosen-chart-legend-list');
+        if (legendListEl) {
+            combined.forEach((c, i) => {
+                const item = document.createElement('div');
+                item.innerHTML = `<strong>${getLetter(i)}</strong> = ${c.label}`;
+                legendListEl.appendChild(item);
             });
         }
     })();

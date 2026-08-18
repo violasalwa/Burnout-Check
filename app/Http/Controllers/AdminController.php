@@ -32,7 +32,7 @@ class AdminController extends Controller
      */
     public function users()
     {
-        $users = User::with('dosen')
+        $users = User::with(['dosen', 'dosenKaprodi'])
             ->latest()
             ->paginate(10);
 
@@ -46,6 +46,7 @@ class AdminController extends Controller
     {
         $user = User::with([
                 'dosen',
+                'dosenKaprodi',
                 'percobaanTes.levelRisiko'
             ])
             ->findOrFail($id);
@@ -58,7 +59,7 @@ class AdminController extends Controller
      */
     public function createUser()
     {
-        $dosenList = User::whereIn('role', ['dosen', 'kaprodi'])->orderBy('name')->get();
+        $dosenList = \App\Models\DosenKaprodi::orderBy('nama')->get();
         return view('admin.users.create', compact('dosenList'));
     }
 
@@ -69,42 +70,53 @@ class AdminController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-
             'email' => 'required|email|unique:users,email',
-
             'password' => 'required|min:6',
-
             'role' => 'required|string',
         ]);
 
-        // Conditional validation for mahasiswa role
         $kelas = null;
         $dosenId = null;
         $angkatan = null;
         if ($request->role === 'mahasiswa') {
             $request->validate([
                 'kelas' => 'required|integer|between:5,9',
-                'dosen_id' => 'required_unless:kelas,5|exists:users,id',
+                'dosen_id' => 'required_unless:kelas,5|exists:dosen_kaprodi,id',
                 'angkatan' => 'required|numeric|digits:4',
+                'nim' => 'required|string|unique:users,nim',
+                'ipk' => 'required|numeric|min:0|max:4',
             ]);
             $kelas = $request->kelas;
             $dosenId = $request->dosen_id;
             $angkatan = $request->angkatan;
+            $nim = $request->nim;
+            $ipk = $request->ipk;
+        } else {
+            $nim = null;
+            $ipk = null;
         }
 
-        User::create([
+        $userRole = in_array($request->role, ['dosen', 'kaprodi']) ? null : $request->role;
+
+        $user = User::create([
             'name' => $request->name,
-
             'email' => $request->email,
-
             'password' => Hash::make($request->password),
-
-            'role' => $request->role,
-
+            'role' => $userRole,
             'kelas' => $kelas,
             'dosen_id' => $dosenId,
             'angkatan' => $angkatan,
+            'nim' => $nim,
+            'ipk' => $ipk,
         ]);
+
+        if (in_array($request->role, ['dosen', 'kaprodi'])) {
+            \App\Models\DosenKaprodi::create([
+                'user_id' => $user->id,
+                'nama' => $user->name,
+                'jabatan' => $request->role,
+            ]);
+        }
 
         return redirect()
             ->route('admin.users.index')
@@ -116,8 +128,8 @@ class AdminController extends Controller
      */
     public function editUser($id)
     {
-        $user = User::findOrFail($id);
-        $dosenList = User::whereIn('role', ['dosen', 'kaprodi'])->orderBy('name')->get();
+        $user = User::with('dosenKaprodi')->findOrFail($id);
+        $dosenList = \App\Models\DosenKaprodi::orderBy('nama')->get();
 
         return view('admin.users.edit', compact('user', 'dosenList'));
     }
@@ -127,47 +139,58 @@ class AdminController extends Controller
      */
     public function updateUser(Request $request, $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::with('dosenKaprodi')->findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
-
             'email' => 'required|email|unique:users,email,' . $user->id,
-
             'role' => 'required|string',
         ]);
 
-        // Conditional validation for mahasiswa
         if ($request->role === 'mahasiswa') {
             $request->validate([
                 'kelas' => 'required|integer|between:5,9',
-                'dosen_id' => 'required_unless:kelas,5|exists:users,id',
+                'dosen_id' => 'required_unless:kelas,5|exists:dosen_kaprodi,id',
                 'angkatan' => 'required|numeric|digits:4',
+                'nim' => 'required|string|unique:users,nim,' . $user->id,
+                'ipk' => 'required|numeric|min:0|max:4',
             ]);
         }
       
         $user->name = $request->name;
-
         $user->email = $request->email;
-
-        $user->role = $request->role;
+        $user->role = in_array($request->role, ['dosen', 'kaprodi']) ? null : $request->role;
 
         if ($request->role === 'mahasiswa') {
             $user->kelas = $request->kelas;
             $user->dosen_id = $request->dosen_id;
             $user->angkatan = $request->angkatan;
+            $user->nim = $request->nim;
+            $user->ipk = $request->ipk;
         } else {
             $user->kelas = null;
             $user->dosen_id = null;
             $user->angkatan = null;
+            $user->nim = null;
+            $user->ipk = null;
         }
 
         if ($request->filled('password')) {
-
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
+
+        if (in_array($request->role, ['dosen', 'kaprodi'])) {
+            \App\Models\DosenKaprodi::updateOrCreate(
+                ['user_id' => $user->id],
+                ['nama' => $user->name, 'jabatan' => $request->role]
+            );
+        } else {
+            if ($user->dosenKaprodi) {
+                $user->dosenKaprodi->delete();
+            }
+        }
 
         return redirect()
             ->route('admin.users.index')
@@ -290,8 +313,8 @@ class AdminController extends Controller
      */
     public function hasilTes(Request $request)
     {
-        $dosens = User::where('role', 'dosen')
-            ->orderBy('name')
+        $dosens = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
+            ->orderBy('nama')
             ->get();
 
         $selectedDosenId = $request->query('dosen_id');
@@ -299,7 +322,7 @@ class AdminController extends Controller
         $results = null;
 
         if ($selectedDosenId) {
-            $selectedDosen = User::where('role', 'dosen')
+            $selectedDosen = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
                 ->find($selectedDosenId);
 
             if ($selectedDosen) {
@@ -327,8 +350,8 @@ class AdminController extends Controller
 
     public function mahasiswaByDosen(Request $request)
     {
-        $dosens = User::where('role', 'dosen')
-            ->orderBy('name')
+        $dosens = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
+            ->orderBy('nama')
             ->get();
 
         $selectedDosenId = $request->query('dosen_id');
@@ -336,7 +359,7 @@ class AdminController extends Controller
         $mahasiswas = null;
 
         if ($selectedDosenId) {
-            $selectedDosen = User::where('role', 'dosen')
+            $selectedDosen = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
                 ->find($selectedDosenId);
 
             if ($selectedDosen) {
@@ -370,5 +393,10 @@ class AdminController extends Controller
         $pdf = Pdf::loadView('mahasiswa.pdf.hasil', compact('percobaan'));
 
         return $pdf->download('hasil-burnout-mahasiswa-' . $percobaan->user->id . '.pdf');
+    }
+
+    public function help()
+    {
+        return view('admin.help');
     }
 }

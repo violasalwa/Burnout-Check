@@ -22,7 +22,8 @@ class BimbinganController extends Controller
     // 🔹 form tambah
     public function create()
     {
-        $mahasiswa = User::where('dosen_id', auth()->id())->get();
+        $dosenId = auth()->user()->dosenKaprodi ? auth()->user()->dosenKaprodi->id : null;
+        $mahasiswa = User::where('dosen_id', $dosenId)->get();
 
         return view('dosen.bimbingan-create', compact('mahasiswa'));
     }

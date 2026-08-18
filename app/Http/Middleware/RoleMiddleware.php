@@ -15,7 +15,20 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!$request->user() || !in_array($request->user()->role, $roles)) {
+        $user = $request->user();
+        
+        if (!$user) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $userRole = $user->role;
+
+        // If user is Dosen/Kaprodi, use the jabatan from dosen_kaprodi table
+        if ($user->dosenKaprodi) {
+            $userRole = $user->dosenKaprodi->jabatan;
+        }
+
+        if (!in_array($userRole, $roles)) {
             abort(403, 'Unauthorized action.');
         }
 

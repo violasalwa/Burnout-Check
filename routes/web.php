@@ -30,8 +30,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
        DASHBOARD REDIRECT ROLE
     ========================= */
     Route::get('/dashboard', function () {
-
-        $role = auth()->user()->role;
+        $user = auth()->user();
+        $role = $user->role;
+        if ($user->dosenKaprodi) {
+            $role = $user->dosenKaprodi->jabatan;
+        }
 
         return redirect()->route($role . '.dashboard');
 
@@ -67,6 +70,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         /* HISTORY */
         Route::get('/history', [MahasiswaController::class, 'history'])
             ->name('history');
+
+
     });
 
     /* =========================
@@ -171,6 +176,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/mahasiswa', [AdminController::class, 'mahasiswaByDosen'])
             ->name('mahasiswa.index');
+
+        /* HELP */
+        Route::get('/help', [AdminController::class, 'help'])
+            ->name('help');
     });
 
     /* =========================
@@ -186,6 +195,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/mahasiswa', [DosenController::class, 'mahasiswa'])
             ->name('mahasiswa');
+
+        /* HELP */
+        Route::get('/help', [DosenController::class, 'help'])
+            ->name('help');
     });
 
     /* =========================
@@ -207,6 +220,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/dosen/{id}/mahasiswa', [KaprodiController::class, 'mahasiswaByDosen'])
             ->name('dosen.mahasiswa');
+            
+        Route::post('/notifications/read-all', [KaprodiController::class, 'markAllNotificationsAsRead'])
+            ->name('notifications.read-all');
+
+        Route::post('/notifications/{id}/read', [KaprodiController::class, 'markNotificationAsRead'])
+            ->name('notifications.read');
+
+        /* HELP */
+        Route::get('/help', [KaprodiController::class, 'help'])
+            ->name('help');
     });
 
     /* =========================

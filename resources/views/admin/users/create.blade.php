@@ -318,6 +318,28 @@ h1::after {
                 @error('role')<span class="invalid-feedback">{{ $message }}</span>@enderror
             </div>
 
+            {{-- NIM --}}
+            <div class="form-group">
+                <label class="form-label">NIM</label>
+                <input type="text"
+                       name="nim"
+                       class="form-control @error('nim') is-invalid @enderror"
+                       placeholder="Contoh: 123456789"
+                       value="{{ old('nim') }}">
+                @error('nim')<span class="invalid-feedback">{{ $message }}</span>@enderror
+            </div>
+
+            {{-- IPK --}}
+            <div class="form-group">
+                <label class="form-label">IPK</label>
+                <input type="number" step="0.01" min="0" max="4"
+                       name="ipk"
+                       class="form-control @error('ipk') is-invalid @enderror"
+                       placeholder="Contoh: 3.75"
+                       value="{{ old('ipk') }}">
+                @error('ipk')<span class="invalid-feedback">{{ $message }}</span>@enderror
+            </div>
+
             {{-- Kelas --}}
             <div class="form-group">
                 <label class="form-label">Kelas</label>
@@ -352,15 +374,12 @@ h1::after {
             <div class="form-group">
                 <label class="form-label">Dosen Pembimbing</label>
                 <div class="select-wrap">
-                    @php
-                        $dosenList = \App\Models\User::whereIn('role', ['dosen', 'kaprodi'])->orderBy('name')->get();
-                    @endphp
                         <select id="dosen_id"
                             name="dosen_id"
                             class="form-control @error('dosen_id') is-invalid @enderror">
                         <option value="">-- Pilih --</option>
                         @foreach ($dosenList as $dosen)
-                            <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->name }}</option>
+                            <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->nama }} ({{ ucfirst($dosen->jabatan) }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -394,6 +413,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var kelas = document.querySelector('select[name="kelas"]');
     var dosen = document.getElementById('dosen_id');
     var role = document.querySelector('select[name="role"]');
+    var nim = document.querySelector('input[name="nim"]');
+    var ipk = document.querySelector('input[name="ipk"]');
+    var angkatan = document.querySelector('input[name="angkatan"]');
     if (!kelas || !dosen || !role) return;
 
     function enableDosen() {
@@ -405,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function refreshFieldsByRole() {
         if (role.value !== 'mahasiswa') {
-            // disable and clear kelas + dosen for non-mahasiswa
+            // disable and clear fields for non-mahasiswa
             kelas.disabled = true;
             kelas.required = false;
             kelas.value = '';
@@ -416,11 +438,19 @@ document.addEventListener('DOMContentLoaded', function () {
             dosen.value = '';
             dosen.style.opacity = '0.6';
             dosen.setAttribute('aria-disabled', 'true');
+
+            if(nim) { nim.disabled = true; nim.style.opacity = '0.6'; nim.value = ''; }
+            if(ipk) { ipk.disabled = true; ipk.style.opacity = '0.6'; ipk.value = ''; }
+            if(angkatan) { angkatan.disabled = true; angkatan.style.opacity = '0.6'; angkatan.value = ''; }
         } else {
             kelas.disabled = false;
             kelas.required = true;
             kelas.style.opacity = '';
             kelas.removeAttribute('aria-disabled');
+
+            if(nim) { nim.disabled = false; nim.style.opacity = ''; }
+            if(ipk) { ipk.disabled = false; ipk.style.opacity = ''; }
+            if(angkatan) { angkatan.disabled = false; angkatan.style.opacity = ''; }
 
             // ensure dosen is available for mahasiswa
             enableDosen();

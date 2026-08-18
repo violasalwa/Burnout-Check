@@ -15,7 +15,7 @@ class KaprodiController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'kaprodi') {
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
             abort(403, 'Akses ditolak');
         }
 
@@ -25,7 +25,7 @@ class KaprodiController extends Controller
 
         $totalMahasiswa = User::where('role', 'mahasiswa')->count();
 
-        $totalDosen = User::where('role', 'dosen')->count();
+        $totalDosen = \App\Models\DosenKaprodi::where('jabatan', 'dosen')->count();
 
         $latestTesIds = PercobaanTes::selectRaw('MAX(id) as id')
             ->groupBy('pengguna_id')
@@ -47,7 +47,7 @@ class KaprodiController extends Controller
         // =========================
 
         $mahasiswaBimbinganIds = User::where('role', 'mahasiswa')
-            ->where('dosen_id', $user->id)
+            ->where('dosen_id', $user->dosenKaprodi->id ?? null)
             ->pluck('id');
 
         $totalMahasiswaBimbingan = $mahasiswaBimbinganIds->count();
@@ -69,8 +69,8 @@ class KaprodiController extends Controller
         });
 
         // compute top dosen across prodi (by number of bimbingan students who have taken tests)
-        $dosenStats = User::where('role', 'dosen')
-            ->orderBy('name')
+        $dosenStats = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
+            ->orderBy('nama')
             ->get()
             ->map(function ($dosen) {
                 $mahasiswaIds = User::where('role', 'mahasiswa')
@@ -90,7 +90,7 @@ class KaprodiController extends Controller
 
                 return (object) [
                     'id' => $dosen->id,
-                    'name' => $dosen->name,
+                    'name' => $dosen->nama,
                     'count' => $count,
                 ];
             });
@@ -102,7 +102,7 @@ class KaprodiController extends Controller
         $mediumLevelIds = \App\Models\LevelRisiko::where('nama_level', 'Sedang')->pluck('id')->toArray();
         $highLevelIds   = \App\Models\LevelRisiko::whereIn('nama_level', ['Tinggi', 'Sangat Tinggi'])->pluck('id')->toArray();
 
-        $dosenData = User::where('role', 'dosen')->orderBy('name')->get()
+        $dosenData = \App\Models\DosenKaprodi::where('jabatan', 'dosen')->orderBy('nama')->get()
             ->map(function ($dosen) use ($lowLevelIds, $mediumLevelIds, $highLevelIds) {
                 $mahasiswaIds = User::where('role', 'mahasiswa')
                     ->where('dosen_id', $dosen->id)
@@ -137,7 +137,7 @@ class KaprodiController extends Controller
 
                 return (object) [
                     'id'       => $dosen->id,
-                    'name'     => $dosen->name,
+                    'name'     => $dosen->nama,
                     'avg'      => round($avgScore, 1),
                     'students' => $students->toArray(),
                 ];
@@ -166,7 +166,7 @@ class KaprodiController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'kaprodi') {
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
             abort(403, 'Akses ditolak');
         }
 
@@ -207,8 +207,8 @@ class KaprodiController extends Controller
         $mediumLevelIds = LevelRisiko::where('nama_level', 'Sedang')->pluck('id')->toArray();
         $highLevelIds = LevelRisiko::whereIn('nama_level', ['Tinggi', 'Sangat Tinggi'])->pluck('id')->toArray();
 
-        $dosenAggregates = User::where('role', 'dosen')
-            ->orderBy('name')
+        $dosenAggregates = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
+            ->orderBy('nama')
             ->get();
 
         $dosenData = $dosenAggregates->map(function ($dosen) use ($lowLevelIds, $mediumLevelIds, $highLevelIds) {
@@ -265,7 +265,7 @@ class KaprodiController extends Controller
 
             return (object) [
                 'id' => $dosen->id,
-                'name' => $dosen->name,
+                'name' => $dosen->nama,
                 'total' => (int) $total,
                 'low' => (int) $lowCount,
                 'medium' => (int) $mediumCount,
@@ -281,8 +281,8 @@ class KaprodiController extends Controller
         $dosenAvgs = $dosenData->pluck('avg')->toArray();
 
         // --- high-risk per-dosen (Tinggi + Sangat Tinggi) ---
-        $highDosenAggregates = User::where('role', 'dosen')
-            ->orderBy('name')
+        $highDosenAggregates = \App\Models\DosenKaprodi::where('jabatan', 'dosen')
+            ->orderBy('nama')
             ->get()
             ->map(function ($dosen) use ($highLevelIds) {
                 $mahasiswaIds = User::where('role', 'mahasiswa')
@@ -304,7 +304,7 @@ class KaprodiController extends Controller
 
                 return (object) [
                     'id' => $dosen->id,
-                    'name' => $dosen->name,
+                    'name' => $dosen->nama,
                     'count' => $count,
                 ];
             });
@@ -337,7 +337,7 @@ class KaprodiController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'kaprodi') {
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
             abort(403, 'Akses ditolak');
         }
 
@@ -345,7 +345,7 @@ class KaprodiController extends Controller
                 'percobaanTes.levelRisiko'
             ])
             ->where('role', 'mahasiswa')
-            ->where('dosen_id', $user->id)
+            ->where('dosen_id', $user->dosenKaprodi->id ?? null)
             ->latest()
             ->paginate(10);
 
@@ -359,11 +359,11 @@ class KaprodiController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->role !== 'kaprodi') {
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
             abort(403, 'Akses ditolak');
         }
 
-        $dosen = User::where('id', $id)->where('role', 'dosen')->firstOrFail();
+        $dosen = \App\Models\DosenKaprodi::where('id', $id)->where('jabatan', 'dosen')->firstOrFail();
 
         $mahasiswa = User::with([
                 'percobaanTes.levelRisiko'
@@ -377,5 +377,42 @@ class KaprodiController extends Controller
             'kaprodi.mahasiswa-by-dosen',
             compact('mahasiswa', 'dosen')
         );
+    }
+
+    // =========================
+    // MARK NOTIFICATION AS READ
+    // =========================
+    public function markNotificationAsRead($id)
+    {
+        $user = auth()->user();
+        
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
+            abort(403, 'Akses ditolak');
+        }
+
+        $notification = $user->notifications()->where('id', $id)->first();
+        if ($notification) {
+            $notification->markAsRead();
+        }
+
+        return redirect()->back();
+    }
+
+    public function markAllNotificationsAsRead()
+    {
+        $user = auth()->user();
+        
+        if (!$user->dosenKaprodi || $user->dosenKaprodi->jabatan !== 'kaprodi') {
+            abort(403, 'Akses ditolak');
+        }
+
+        $user->unreadNotifications->markAsRead();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function help()
+    {
+        return view('kaprodi.help');
     }
 }

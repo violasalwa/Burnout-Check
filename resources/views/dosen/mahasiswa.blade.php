@@ -83,8 +83,15 @@ h1::after {
 .card:last-of-type:hover { transform: none; }
 
 /* ── TABLE ────────────────────────────────────────────────── */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+}
+
 .table {
     width: 100%;
+    min-width: 1000px;
     border-collapse: collapse;
     font-size: 0.88rem;
 }
@@ -126,6 +133,7 @@ h1::after {
     color: var(--g8);
     vertical-align: middle;
     line-height: 1.5;
+    white-space: nowrap;
 }
 
 /* Kolom No */
@@ -357,14 +365,17 @@ nav[role="navigation"] a:hover {
 <h1>Daftar Mahasiswa Bimbingan</h1>
 
 <div class="card">
-    <table class="table">
+    <div class="table-responsive">
+        <table class="table">
         <thead>
             <tr>
                 <th>No</th>
+                <th>NIM</th>
                 <th>Nama</th>
                 <th>Email</th>
                 <th>Kelas</th>
                 <th>Angkatan</th>
+                <th>IPK</th>
                 <th>Skor Terbaru</th>
                 <th>Level Risiko</th>
                 <th>Indikator Tertinggi</th>
@@ -374,6 +385,7 @@ nav[role="navigation"] a:hover {
             @foreach ($mahasiswas as $index => $mahasiswa)
                 <tr>
                     <td>{{ $mahasiswas->firstItem() + $index }}</td>
+                    <td>{{ $mahasiswa->nim ?? '-' }}</td>
                     <td>{{ $mahasiswa->name }}</td>
                     <td>{{ $mahasiswa->email }}</td>
                     @php
@@ -392,6 +404,7 @@ nav[role="navigation"] a:hover {
                     @endphp
                     <td>{{ $kelasLabel }}</td>
                     <td>{{ $mahasiswa->angkatan ?? '-' }}</td>
+                    <td>{{ $mahasiswa->ipk ?? '-' }}</td>
                     <td>
                         @if ($mahasiswa->percobaanTes->first())
                             {{ $mahasiswa->percobaanTes->first()->total_skor }}
@@ -429,6 +442,7 @@ nav[role="navigation"] a:hover {
             @endforeach
         </tbody>
     </table>
+    </div>
 
     <div style="margin-top: 1.5rem;">
         {{ $mahasiswas->links() }}

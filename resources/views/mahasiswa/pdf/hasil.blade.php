@@ -331,7 +331,7 @@
                     <td class="skor-col">
                         <div class="skor-label">Total Skor</div>
                         <div class="skor-num">{{ $skor }}</div>
-                        <div class="skor-of">dari 165 poin</div>
+                        <div class="skor-of">dari 100 poin</div>
                     </td>
                     <td class="info-col">
                         <div class="level-badge">{{ $percobaan->levelRisiko->nama_level }}</div>
@@ -346,7 +346,7 @@
                 <tr>
                     <td>
                         <div class="stat-lbl">Persentase</div>
-                        <div class="stat-val">{{ round(($skor / 165) * 100) }}%</div>
+                        <div class="stat-val">{{ $skor }}%</div>
                     </td>
                     <td class="stat-div"><div class="stat-div-inner"></div></td>
                     <td>

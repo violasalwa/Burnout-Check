@@ -342,6 +342,26 @@
 
                 <div class="field-row">
                     <div class="field-group">
+                        <x-input-label for="nim" value="NIM" />
+                        <input id="nim" name="nim" type="text"
+                               class="reg-input {{ $errors->has('nim') ? 'is-invalid' : '' }}"
+                               placeholder="Nomor Induk Mahasiswa"
+                               value="{{ old('nim') }}" required />
+                        @error('nim') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="field-group">
+                        <x-input-label for="ipk" value="IPK" />
+                        <input id="ipk" name="ipk" type="number" step="0.01" min="0" max="4.00"
+                               class="reg-input {{ $errors->has('ipk') ? 'is-invalid' : '' }}"
+                               placeholder="Contoh: 3.50"
+                               value="{{ old('ipk') }}" required />
+                        @error('ipk') <span class="field-error">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="field-row">
+                    <div class="field-group">
                         <x-input-label for="kelas" value="Kelas" />
                         <select id="kelas" name="kelas"
                                 class="reg-select {{ $errors->has('kelas') ? 'is-invalid' : '' }}" required>
@@ -371,7 +391,7 @@
                         class="reg-select {{ $errors->has('dosen_id') ? 'is-invalid' : '' }}" required>
                         <option value="">-- Pilih --</option>
                         @foreach ($dosenList as $dosen)
-                            <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->name }}</option>
+                            <option value="{{ $dosen->id }}" {{ old('dosen_id') == $dosen->id ? 'selected' : '' }}>{{ $dosen->nama }}</option>
                         @endforeach
                     </select>
                     @error('dosen_id') <span class="field-error">{{ $message }}</span> @enderror

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\User;
+use App\Models\DosenKaprodi;
 
 class ProfileController extends Controller
 {
@@ -18,7 +19,7 @@ class ProfileController extends Controller
     public function edit(Request $request): View
     {
         // ambil hanya user dengan role dosen
-        $dosen = User::where('role', 'dosen')->get();
+        $dosen = DosenKaprodi::where('jabatan', 'dosen')->get();
 
         return view('profile.edit', [
             'user' => $request->user(),
@@ -42,9 +43,9 @@ class ProfileController extends Controller
             $request->validate([
                 'dosen_id' => [
                     'nullable',
-                    'exists:users,id',
+                    'exists:dosen_kaprodi,id',
                     function ($attribute, $value, $fail) {
-                        if ($value && !User::where('id', $value)->where('role', 'dosen')->exists()) {
+                        if ($value && !DosenKaprodi::where('id', $value)->where('jabatan', 'dosen')->exists()) {
                             $fail('Yang dipilih bukan dosen.');
                         }
                     }

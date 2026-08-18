@@ -17,7 +17,9 @@ class User extends Authenticatable
         'role',
         'kelas',
         'dosen_id',
-        'angkatan'
+        'angkatan',
+        'nim',
+        'ipk'
     ];
 
     protected $hidden = [
@@ -26,19 +28,27 @@ class User extends Authenticatable
     ];
 
     // =========================
-    // 👨‍🏫 MAHASISWA → DOSEN
+    // 👨‍🏫 DOSEN KAPRODI PROFILE
     // =========================
-    public function dosen()
+    public function dosenKaprodi()
     {
-        return $this->belongsTo(User::class, 'dosen_id');
+        return $this->hasOne(DosenKaprodi::class, 'user_id');
     }
 
     // =========================
-    // 👨‍🏫 DOSEN → MAHASISWA BIMBINGAN
+    // 👨‍🏫 MAHASISWA → DOSEN (DosenKaprodi)
+    // =========================
+    public function dosen()
+    {
+        return $this->belongsTo(DosenKaprodi::class, 'dosen_id');
+    }
+
+    // =========================
+    // 👨‍🏫 DOSEN (User) → MAHASISWA BIMBINGAN
     // =========================
     public function mahasiswaBimbingan()
     {
-        return $this->hasMany(User::class, 'dosen_id');
+        return $this->hasManyThrough(User::class, DosenKaprodi::class, 'user_id', 'dosen_id', 'id', 'id');
     }
 
     // =========================

@@ -240,10 +240,10 @@ h1 {
             <a href="{{ route('admin.mahasiswa.index', ['dosen_id' => $dosen->id]) }}" 
                class="dosen-card {{ optional($selectedDosen)->id == $dosen->id ? 'active' : '' }}">
                 <div class="dosen-card__icon">
-                    {{ substr($dosen->name, 0, 1) }}
+                    {{ substr($dosen->nama, 0, 1) }}
                 </div>
                 <div class="dosen-card__info">
-                    <span class="dosen-card__name">{{ $dosen->name }}</span>
+                    <span class="dosen-card__name">{{ $dosen->nama }}</span>
                     <span class="dosen-card__role">Dosen Pembimbing</span>
                 </div>
             </a>
@@ -256,7 +256,7 @@ h1 {
                 <div>
                     <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--g8);">Mahasiswa Bimbingan</h3>
                     <p style="font-size: 0.9rem; color: var(--g6); margin-top: 0.25rem;">
-                        Menampilkan hasil tes untuk mahasiswa bimbingan <strong>{{ $selectedDosen->name }}</strong>
+                        Menampilkan hasil tes untuk mahasiswa bimbingan <strong>{{ $selectedDosen->nama }}</strong>
                     </p>
                 </div>
                 <a href="{{ route('admin.mahasiswa.index') }}" class="btn btn-secondary">
@@ -354,7 +354,7 @@ h1 {
                         <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                     <p style="font-size: 1rem; font-weight: 600;">Tidak Ada Data</p>
-                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Belum ada mahasiswa bimbingan {{ $selectedDosen->name }} yang melakukan tes.</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Belum ada mahasiswa bimbingan {{ $selectedDosen->nama }} yang melakukan tes.</p>
                 </div>
             @endif
         @endif

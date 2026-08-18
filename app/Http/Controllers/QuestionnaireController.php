@@ -9,6 +9,9 @@ use App\Models\Jawaban;
 use App\Models\LevelRisiko;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\HighBurnoutNotification;
+use App\Models\User;
 
 class QuestionnaireController extends Controller
 {
@@ -98,6 +101,17 @@ class QuestionnaireController extends Controller
             }
 
             DB::commit();
+
+            // =========================
+            // TRIGGER NOTIFICATION
+            // =========================
+            if (in_array(strtolower($levelRisiko->nama_level), ['tinggi', 'sangat tinggi'])) {
+                $kaprodis = User::whereHas('dosenKaprodi', function ($q) {
+                    $q->where('jabatan', 'kaprodi');
+                })->get();
+
+                Notification::send($kaprodis, new HighBurnoutNotification(auth()->user(), $percobaan));
+            }
 
             return redirect()->route(
                 'mahasiswa.tes.hasil',

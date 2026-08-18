@@ -400,9 +400,12 @@ nav[role="navigation"] span > span {
                     <td>{{ $users->firstItem() + $index }}</td>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
+                    @php
+                        $actualRole = $user->role ?? ($user->dosenKaprodi ? $user->dosenKaprodi->jabatan : 'unknown');
+                    @endphp
                     <td>
-                        <span class="role-badge role-badge--{{ strtolower($user->role) }}">
-                            {{ ucfirst($user->role) }}
+                        <span class="role-badge role-badge--{{ strtolower($actualRole) }}">
+                            {{ ucfirst($actualRole) }}
                         </span>
                     </td>
                     @php
